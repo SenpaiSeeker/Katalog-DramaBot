@@ -6,28 +6,123 @@
     <title>Katalog Premium</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { margin: 0; padding: 0; background-color: var(--tg-theme-bg-color, #141414); color: var(--tg-theme-text-color, #ffffff); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; overflow-x: hidden; }
-        .header { padding: 20px; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent); position: sticky; top: 0; z-index: 10; }
-        .app-title { font-size: 20px; font-weight: bold; }
-        .user-profile { display: flex; align-items: center; gap: 10px; }
-        .user-info-text { display: flex; flex-direction: column; align-items: flex-end; }
-        .user-name { font-size: 14px; font-weight: bold; }
-        .user-id { font-size: 11px; color: #aaaaaa; }
-        .user-avatar { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; }
-        .empty-state { text-align: center; padding: 50px 20px; color: #888; }
-        .grid-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 15px; }
-        .movie-card { position: relative; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.5); transition: transform 0.2s; background-color: #222; cursor: pointer; }
-        .movie-card:active { transform: scale(0.95); }
-        .movie-card img { width: 100%; height: 250px; object-fit: cover; display: block; }
-        .movie-info { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); padding: 20px 10px 10px; }
-        .movie-title { font-size: 14px; font-weight: bold; margin-bottom: 5px; text-shadow: 1px 1px 2px black;}
-        .movie-badge { background-color: #E50914; color: white; font-size: 10px; padding: 2px 6px; border-radius: 3px; display: inline-block; }
-        .free-badge { background-color: #28a745; }
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--tg-theme-bg-color, #141414);
+            color: var(--tg-theme-text-color, #ffffff);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            overflow-x: hidden;
+        }
+        .header {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .app-title {
+            font-size: 18px;
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 50%;
+        }
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .user-info-text {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+        .user-name {
+            font-size: 13px;
+            font-weight: bold;
+        }
+        .user-id {
+            font-size: 10px;
+            color: #aaaaaa;
+        }
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: #888;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            padding: 15px;
+        }
+        .movie-card {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            transition: transform 0.2s;
+            background-color: #1a1a1a;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+        .movie-card:active {
+            transform: scale(0.95);
+        }
+        .movie-card img {
+            width: 100%;
+            aspect-ratio: 2/3;
+            object-fit: contain;
+            background-color: #000000;
+            display: block;
+        }
+        .movie-info {
+            padding: 12px 10px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+        }
+        .movie-title {
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            color: #ffffff;
+        }
+        .movie-badge {
+            background-color: #E50914;
+            color: white;
+            font-size: 10px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            display: inline-block;
+            font-weight: bold;
+        }
+        .free-badge {
+            background-color: #28a745;
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <div class="app-title" id="botTitle">Katalog VOD</div>
+        <div class="app-title" id="botTitle">Memuat...</div>
         <div class="user-profile" id="userProfile">
             <div class="user-info-text">
                 <span class="user-name" id="userName">Tamu</span>
@@ -37,7 +132,7 @@
         </div>
     </div>
 
-    <div id="loading" class="empty-state">Memuat data dari bot...</div>
+    <div id="loading" class="empty-state">Memuat data dari server...</div>
     <div class="grid-container" id="catalogGrid"></div>
 
     <script>
@@ -54,19 +149,35 @@
         }
 
         const urlParams = new URLSearchParams(window.location.search);
-        const dynamicBotUsername = urlParams.get('bot') || "Katalog";
-        document.getElementById('botTitle').innerText = dynamicBotUsername;
-        
         const rawData = urlParams.get('data');
         const encodedToken = urlParams.get('token');
         
         let botToken = "";
+        let dynamicBotUsername = "";
+
         if (encodedToken) {
             botToken = atob(encodedToken.replace(/-/g, '+').replace(/_/g, '/'));
         }
 
+        async function initBot() {
+            if (!botToken) {
+                document.getElementById('botTitle').innerText = "Katalog VOD";
+                return;
+            }
+            try {
+                const res = await fetch(`https://api.telegram.org/bot${botToken}/getMe`);
+                const json = await res.json();
+                if (json.ok) {
+                    dynamicBotUsername = json.result.username;
+                    document.getElementById('botTitle').innerText = json.result.first_name;
+                }
+            } catch (e) {
+                document.getElementById('botTitle').innerText = "Katalog VOD";
+            }
+        }
+
         async function fetchTelegramFile(fileId) {
-            if (!botToken || !fileId) return "https://via.placeholder.com/500x750/222222/FFFFFF/?text=No+Poster";
+            if (!botToken || !fileId) return "https://via.placeholder.com/500x750/000000/333333/?text=No+Poster";
             try {
                 const response = await fetch(`https://api.telegram.org/bot${botToken}/getFile?file_id=${fileId}`);
                 const json = await response.json();
@@ -74,10 +185,12 @@
                     return `https://api.telegram.org/file/bot${botToken}/${json.result.file_path}`;
                 }
             } catch (e) {}
-            return "https://via.placeholder.com/500x750/222222/FFFFFF/?text=Error";
+            return "https://via.placeholder.com/500x750/000000/333333/?text=Error";
         }
 
         async function renderCatalog() {
+            await initBot();
+
             const grid = document.getElementById('catalogGrid');
             const loading = document.getElementById('loading');
 
@@ -104,8 +217,10 @@
                     const card = document.createElement('div');
                     card.className = "movie-card";
                     card.onclick = () => {
-                        tg.openTelegramLink(`https://t.me/${dynamicBotUsername}?start=mp_${item.id}`);
-                        tg.close();
+                        if(dynamicBotUsername) {
+                            tg.openTelegramLink(`https://t.me/${dynamicBotUsername}?start=mp_${item.id}`);
+                            tg.close();
+                        }
                     };
 
                     card.innerHTML = `
@@ -122,7 +237,7 @@
                     });
                 }
             } catch (error) {
-                loading.innerText = "Gagal memproses data.";
+                loading.innerText = "Gagal memproses data dari bot.";
             }
         }
 

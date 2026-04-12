@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Katalog Premium</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--tg-theme-bg-color, #141414);
+            color: var(--tg-theme-text-color, #ffffff);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            overflow-x: hidden;
+        }
+        .header {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .app-title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: #333;
+            object-fit: cover;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            padding: 15px;
+        }
+        .movie-card {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            transition: transform 0.2s;
+        }
+        .movie-card:active {
+            transform: scale(0.95);
+        }
+        .movie-card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            display: block;
+        }
+        .movie-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            padding: 20px 10px 10px;
+        }
+        .movie-title {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .movie-badge {
+            background-color: #E50914;
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="app-title">Xiao Reels</div>
+        <div class="user-profile" id="userProfile">
+            <span id="userName">Tamu</span>
+            <img id="userAvatar" class="user-avatar" src="https://ui-avatars.com/api/?name=Tamu&background=random" alt="User">
+        </div>
+    </div>
+
+    <div class="grid-container">
+        
+        <div class="movie-card" onclick="playMovie('mp_12345')">
+            <img src="https://image.tmdb.org/t/p/w500/poster_contoh_1.jpg" alt="Poster">
+            <div class="movie-info">
+                <div class="movie-title">Hidden Love (2023)</div>
+                <div class="movie-badge">Premium</div>
+            </div>
+        </div>
+
+        <div class="movie-card" onclick="playMovie('mp_67890')">
+            <img src="https://image.tmdb.org/t/p/w500/poster_contoh_2.jpg" alt="Poster">
+            <div class="movie-info">
+                <div class="movie-title">Maid Ku (2026)</div>
+                <div class="movie-badge">Gratis</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        const user = tg.initDataUnsafe?.user;
+        if (user) {
+            document.getElementById('userName').innerText = user.first_name;
+            
+            if (user.photo_url) {
+                document.getElementById('userAvatar').src = user.photo_url;
+            } else {
+                document.getElementById('userAvatar').src = "https://ui-avatars.com/api/?name=" + encodeURIComponent(user.first_name) + "&background=random";
+            }
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const dynamicBotUsername = urlParams.get('bot') || "FsubBuilderBot";
+
+        function playMovie(payload) {
+            const link = "https://t.me/" + dynamicBotUsername + "?start=" + payload;
+            tg.openTelegramLink(link);
+            tg.close();
+        }
+    </script>
+</body>
+</html>

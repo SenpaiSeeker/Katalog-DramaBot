@@ -6,78 +6,33 @@
     <title>Katalog Premium</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: var(--tg-theme-bg-color, #141414);
-            color: var(--tg-theme-text-color, #ffffff);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            overflow-x: hidden;
-        }
-        .header {
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
+        body { margin: 0; padding: 0; background-color: var(--tg-theme-bg-color, #141414); color: var(--tg-theme-text-color, #ffffff); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; overflow-x: hidden; }
+        .header { padding: 20px; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent); position: sticky; top: 0; z-index: 10; }
         .app-title { font-size: 20px; font-weight: bold; }
-        .user-profile { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500; }
-        .user-avatar { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; }
-        
+        .user-profile { display: flex; align-items: center; gap: 10px; }
+        .user-info-text { display: flex; flex-direction: column; align-items: flex-end; }
+        .user-name { font-size: 14px; font-weight: bold; }
+        .user-id { font-size: 11px; color: #aaaaaa; }
+        .user-avatar { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; }
         .empty-state { text-align: center; padding: 50px 20px; color: #888; }
-        
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            padding: 15px;
-        }
-        .movie-card {
-            position: relative;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            transition: transform 0.2s;
-            background-color: #222;
-            cursor: pointer;
-        }
+        .grid-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 15px; }
+        .movie-card { position: relative; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.5); transition: transform 0.2s; background-color: #222; cursor: pointer; }
         .movie-card:active { transform: scale(0.95); }
-        .movie-card img {
-            width: 100%;
-            height: 250px;
-            object-fit: cover;
-            display: block;
-        }
-        .movie-info {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-            padding: 20px 10px 10px;
-        }
+        .movie-card img { width: 100%; height: 250px; object-fit: cover; display: block; }
+        .movie-info { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); padding: 20px 10px 10px; }
         .movie-title { font-size: 14px; font-weight: bold; margin-bottom: 5px; text-shadow: 1px 1px 2px black;}
-        .movie-badge {
-            background-color: #E50914;
-            color: white;
-            font-size: 10px;
-            padding: 2px 6px;
-            border-radius: 3px;
-            display: inline-block;
-        }
+        .movie-badge { background-color: #E50914; color: white; font-size: 10px; padding: 2px 6px; border-radius: 3px; display: inline-block; }
         .free-badge { background-color: #28a745; }
     </style>
 </head>
 <body>
-
     <div class="header">
         <div class="app-title" id="botTitle">Katalog VOD</div>
         <div class="user-profile" id="userProfile">
-            <span id="userName">Tamu</span>
+            <div class="user-info-text">
+                <span class="user-name" id="userName">Tamu</span>
+                <span class="user-id" id="userId">ID: -</span>
+            </div>
             <img id="userAvatar" class="user-avatar" src="https://ui-avatars.com/api/?name=Tamu&background=random" alt="User">
         </div>
     </div>
@@ -91,25 +46,35 @@
 
         const user = tg.initDataUnsafe?.user;
         if (user) {
-            document.getElementById('userName').innerText = user.first_name;
+            const lastName = user.last_name ? " " + user.last_name : "";
+            const fullName = user.first_name + lastName;
+            document.getElementById('userName').innerText = fullName;
+            document.getElementById('userId').innerText = "ID: " + user.id;
             document.getElementById('userAvatar').src = user.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.first_name)}&background=random`;
         }
 
         const urlParams = new URLSearchParams(window.location.search);
-        const dynamicBotUsername = urlParams.get('bot') || "FsubBuilderBot";
+        const dynamicBotUsername = urlParams.get('bot') || "Katalog";
         document.getElementById('botTitle').innerText = dynamicBotUsername;
         
         const rawData = urlParams.get('data');
+        const encodedToken = urlParams.get('token');
+        
+        let botToken = "";
+        if (encodedToken) {
+            botToken = atob(encodedToken.replace(/-/g, '+').replace(/_/g, '/'));
+        }
 
-        async function fetchPoster(title) {
+        async function fetchTelegramFile(fileId) {
+            if (!botToken || !fileId) return "https://via.placeholder.com/500x750/222222/FFFFFF/?text=No+Poster";
             try {
-                const res = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=99e4375eedc73e2db1289fe8a1488da7&query=${encodeURIComponent(title)}&language=id-ID`);
-                const json = await res.json();
-                if (json.results && json.results.length > 0 && json.results[0].poster_path) {
-                    return `https://image.tmdb.org/t/p/w500${json.results[0].poster_path}`;
+                const response = await fetch(`https://api.telegram.org/bot${botToken}/getFile?file_id=${fileId}`);
+                const json = await response.json();
+                if (json.ok && json.result.file_path) {
+                    return `https://api.telegram.org/file/bot${botToken}/${json.result.file_path}`;
                 }
-            } catch (e) { console.error(e); }
-            return "https://via.placeholder.com/500x750/222222/FFFFFF/?text=" + encodeURIComponent(title);
+            } catch (e) {}
+            return "https://via.placeholder.com/500x750/222222/FFFFFF/?text=Error";
         }
 
         async function renderCatalog() {
@@ -122,7 +87,7 @@
             }
 
             try {
-                const decodedData = decodeURIComponent(escape(atob(rawData)));
+                const decodedData = decodeURIComponent(escape(atob(rawData.replace(/-/g, '+').replace(/_/g, '/'))));
                 const catalogList = JSON.parse(decodedData);
 
                 if (catalogList.length === 0) {
@@ -152,13 +117,12 @@
                     `;
                     grid.appendChild(card);
 
-                    fetchPoster(item.t).then(imgUrl => {
+                    fetchTelegramFile(item.p).then(imgUrl => {
                         document.getElementById(`img-${item.id}`).src = imgUrl;
                     });
                 }
             } catch (error) {
-                loading.innerText = "Gagal memproses data dari bot.";
-                console.error(error);
+                loading.innerText = "Gagal memproses data.";
             }
         }
 

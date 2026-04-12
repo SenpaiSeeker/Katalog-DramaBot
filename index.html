@@ -24,24 +24,12 @@
             top: 0;
             z-index: 10;
         }
-        .app-title {
-            font-size: 24px;
-            font-weight: bold;
-        }
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 14px;
-            font-weight: 500;
-        }
-        .user-avatar {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            background-color: #333;
-            object-fit: cover;
-        }
+        .app-title { font-size: 20px; font-weight: bold; }
+        .user-profile { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500; }
+        .user-avatar { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; }
+        
+        .empty-state { text-align: center; padding: 50px 20px; color: #888; }
+        
         .grid-container {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -54,10 +42,10 @@
             overflow: hidden;
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
             transition: transform 0.2s;
+            background-color: #222;
+            cursor: pointer;
         }
-        .movie-card:active {
-            transform: scale(0.95);
-        }
+        .movie-card:active { transform: scale(0.95); }
         .movie-card img {
             width: 100%;
             height: 250px;
@@ -72,11 +60,7 @@
             background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
             padding: 20px 10px 10px;
         }
-        .movie-title {
-            font-size: 14px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
+        .movie-title { font-size: 14px; font-weight: bold; margin-bottom: 5px; text-shadow: 1px 1px 2px black;}
         .movie-badge {
             background-color: #E50914;
             color: white;
@@ -85,37 +69,21 @@
             border-radius: 3px;
             display: inline-block;
         }
+        .free-badge { background-color: #28a745; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <div class="app-title">Xiao Reels</div>
+        <div class="app-title" id="botTitle">Katalog VOD</div>
         <div class="user-profile" id="userProfile">
             <span id="userName">Tamu</span>
             <img id="userAvatar" class="user-avatar" src="https://ui-avatars.com/api/?name=Tamu&background=random" alt="User">
         </div>
     </div>
 
-    <div class="grid-container">
-        
-        <div class="movie-card" onclick="playMovie('mp_12345')">
-            <img src="https://image.tmdb.org/t/p/w500/poster_contoh_1.jpg" alt="Poster">
-            <div class="movie-info">
-                <div class="movie-title">Hidden Love (2023)</div>
-                <div class="movie-badge">Premium</div>
-            </div>
-        </div>
-
-        <div class="movie-card" onclick="playMovie('mp_67890')">
-            <img src="https://image.tmdb.org/t/p/w500/poster_contoh_2.jpg" alt="Poster">
-            <div class="movie-info">
-                <div class="movie-title">Maid Ku (2026)</div>
-                <div class="movie-badge">Gratis</div>
-            </div>
-        </div>
-
-    </div>
+    <div id="loading" class="empty-state">Memuat data dari bot...</div>
+    <div class="grid-container" id="catalogGrid"></div>
 
     <script>
         const tg = window.Telegram.WebApp;
@@ -124,22 +92,77 @@
         const user = tg.initDataUnsafe?.user;
         if (user) {
             document.getElementById('userName').innerText = user.first_name;
-            
-            if (user.photo_url) {
-                document.getElementById('userAvatar').src = user.photo_url;
-            } else {
-                document.getElementById('userAvatar').src = "https://ui-avatars.com/api/?name=" + encodeURIComponent(user.first_name) + "&background=random";
-            }
+            document.getElementById('userAvatar').src = user.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.first_name)}&background=random`;
         }
 
         const urlParams = new URLSearchParams(window.location.search);
         const dynamicBotUsername = urlParams.get('bot') || "FsubBuilderBot";
+        document.getElementById('botTitle').innerText = dynamicBotUsername;
+        
+        const rawData = urlParams.get('data');
 
-        function playMovie(payload) {
-            const link = "https://t.me/" + dynamicBotUsername + "?start=" + payload;
-            tg.openTelegramLink(link);
-            tg.close();
+        async function fetchPoster(title) {
+            try {
+                const res = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=99e4375eedc73e2db1289fe8a1488da7&query=${encodeURIComponent(title)}&language=id-ID`);
+                const json = await res.json();
+                if (json.results && json.results.length > 0 && json.results[0].poster_path) {
+                    return `https://image.tmdb.org/t/p/w500${json.results[0].poster_path}`;
+                }
+            } catch (e) { console.error(e); }
+            return "https://via.placeholder.com/500x750/222222/FFFFFF/?text=" + encodeURIComponent(title);
         }
+
+        async function renderCatalog() {
+            const grid = document.getElementById('catalogGrid');
+            const loading = document.getElementById('loading');
+
+            if (!rawData) {
+                loading.innerText = "Tidak ada data yang dikirim dari bot.";
+                return;
+            }
+
+            try {
+                const decodedData = decodeURIComponent(escape(atob(rawData)));
+                const catalogList = JSON.parse(decodedData);
+
+                if (catalogList.length === 0) {
+                    loading.innerText = "Katalog kosong.";
+                    return;
+                }
+
+                loading.style.display = "none";
+
+                for (const item of catalogList) {
+                    const badgeClass = item.is_prem ? "movie-badge" : "movie-badge free-badge";
+                    const badgeText = item.is_prem ? "Premium" : "Gratis";
+                    
+                    const card = document.createElement('div');
+                    card.className = "movie-card";
+                    card.onclick = () => {
+                        tg.openTelegramLink(`https://t.me/${dynamicBotUsername}?start=mp_${item.id}`);
+                        tg.close();
+                    };
+
+                    card.innerHTML = `
+                        <img id="img-${item.id}" src="https://via.placeholder.com/500x750/111111/444444/?text=Loading..." alt="Poster">
+                        <div class="movie-info">
+                            <div class="movie-title">${item.t}</div>
+                            <div class="${badgeClass}">${badgeText}</div>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+
+                    fetchPoster(item.t).then(imgUrl => {
+                        document.getElementById(`img-${item.id}`).src = imgUrl;
+                    });
+                }
+            } catch (error) {
+                loading.innerText = "Gagal memproses data dari bot.";
+                console.error(error);
+            }
+        }
+
+        renderCatalog();
     </script>
 </body>
 </html>

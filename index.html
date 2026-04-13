@@ -45,6 +45,7 @@
     </style>
 </head>
 <body>
+
     <div class="header">
         <div class="app-title" id="botTitle">VOD</div>
         <div class="user-profile" id="userProfile">
@@ -84,13 +85,15 @@
 
         const user = tg.initDataUnsafe?.user;
         if (user) {
-            document.getElementById('userName').innerText = user.first_name + (user.last_name ? " " + user.last_name : "");
+            const lastName = user.last_name ? " " + user.last_name : "";
+            const fullName = user.first_name + lastName;
+            document.getElementById('userName').innerText = fullName;
             document.getElementById('userId').innerText = "ID: " + user.id;
             document.getElementById('userAvatar').src = user.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.first_name)}&background=1a1a1a&color=fff`;
         }
 
         const urlParams = new URLSearchParams(window.location.search);
-        const dbId = urlParams.get('db_id');
+        const tgPath = urlParams.get('tg_path');
         const encodedToken = urlParams.get('token');
         let dynamicBotUsername = "Bot";
         let botToken = "";
@@ -114,33 +117,38 @@
                 } catch (e) {}
             }
 
-            if (!dbId) {
-                document.getElementById('emptyState').innerText = "Akses ditolak. Buka dari bot.";
+            if (!tgPath) {
+                document.getElementById('emptyState').innerText = "Akses ditolak. Hubungi Server.";
                 document.getElementById('emptyState').style.display = "block";
                 return;
             }
 
             try {
-                if (dbId.startsWith("B64_")) {
-                    const b64 = dbId.replace("B64_", "").replace(/-/g, '+').replace(/_/g, '/');
+                if (tgPath.startsWith("B64_")) {
+                    const b64 = tgPath.replace("B64_", "").replace(/-/g, '+').replace(/_/g, '/');
                     catalogData = JSON.parse(decodeURIComponent(escape(atob(b64))));
                     renderApp();
                 } else {
-                    try {
-                        const res = await fetch(`https://spaceb.in/api/v1/documents/${dbId}`);
-                        const json = await res.json();
-                        catalogData = JSON.parse(json.payload.content);
+                    const teleGraphUrl = `https://api.telegra.ph/getPage/${tgPath}?return_content=true`;
+                    const graphRes = await fetch(teleGraphUrl);
+                    const graphJson = await graphRes.json();
+                    
+                    if(graphJson.ok) {
+                        let finalStr = "";
+                        const nodeArray = graphJson.result.content;
+                        for (let node of nodeArray) {
+                            if(node.children && node.children.length > 0) {
+                                finalStr += node.children[0];
+                            }
+                        }
+                        catalogData = JSON.parse(finalStr);
                         renderApp();
-                    } catch (err1) {
-                        const fallbackRes = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(`https://spaceb.in/api/v1/documents/${dbId}`)}`);
-                        const fallbackJson = await fallbackRes.json();
-                        const spacebinData = JSON.parse(fallbackJson.contents);
-                        catalogData = JSON.parse(spacebinData.payload.content);
-                        renderApp();
+                    } else {
+                        throw new Error();
                     }
                 }
             } catch (e) {
-                document.getElementById('emptyState').innerText = "Gagal mengunduh database cloud.";
+                document.getElementById('emptyState').innerText = "Gagal mengambil sinkronisasi cloud dari Telegram.";
                 document.getElementById('emptyState').style.display = "block";
             }
         }

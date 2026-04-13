@@ -10,7 +10,7 @@
         * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
         body { margin: 0; padding: 0; background-color: var(--bg); color: var(--text); overflow-x: hidden; }
         .header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: rgba(15, 15, 15, 0.9); backdrop-filter: blur(10px); z-index: 100; border-bottom: 1px solid #333; }
-        .app-title { font-size: 20px; font-weight: 800; background: -webkit-linear-gradient(#fff, #aaa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 55vw; }
+        .app-title { font-size: 18px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 50vw; }
         .user-profile { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
         .user-info-text { display: flex; flex-direction: column; align-items: flex-end; }
         .user-name { font-size: 13px; font-weight: 700; }
@@ -27,7 +27,7 @@
         .hero-banner img { width: 100%; height: 100%; object-fit: cover; }
         .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(15,15,15,1) 0%, rgba(15,15,15,0) 100%); display: flex; flex-direction: column; justify-content: flex-end; padding: 20px; }
         .hero-badge { background: var(--primary); color: #fff; font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 4px; width: max-content; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; }
-        .hero-title { font-size: 22px; font-weight: 800; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
+        .hero-title { font-size: 22px; font-weight: 800; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .grid-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 0 20px 30px; }
         .movie-card { border-radius: 8px; overflow: hidden; background-color: var(--card); cursor: pointer; position: relative; transition: 0.2s; display: flex; flex-direction: column; }
         .movie-card:active { transform: scale(0.96); }
@@ -45,7 +45,6 @@
     </style>
 </head>
 <body>
-
     <div class="header">
         <div class="app-title" id="botTitle">VOD</div>
         <div class="user-profile" id="userProfile">
@@ -91,7 +90,7 @@
         }
 
         const urlParams = new URLSearchParams(window.location.search);
-        const rawData = urlParams.get('data');
+        const dbId = urlParams.get('db_id');
         const encodedToken = urlParams.get('token');
         let dynamicBotUsername = "Bot";
         let botToken = "";
@@ -115,18 +114,33 @@
                 } catch (e) {}
             }
 
-            if (!rawData) {
-                document.getElementById('emptyState').innerText = "Data tidak dikirim oleh bot.";
+            if (!dbId) {
+                document.getElementById('emptyState').innerText = "Akses ditolak. Buka dari bot.";
                 document.getElementById('emptyState').style.display = "block";
                 return;
             }
 
             try {
-                const decodedData = decodeURIComponent(escape(atob(rawData.replace(/-/g, '+').replace(/_/g, '/'))));
-                catalogData = JSON.parse(decodedData);
-                renderApp();
+                if (dbId.startsWith("B64_")) {
+                    const b64 = dbId.replace("B64_", "").replace(/-/g, '+').replace(/_/g, '/');
+                    catalogData = JSON.parse(decodeURIComponent(escape(atob(b64))));
+                    renderApp();
+                } else {
+                    try {
+                        const res = await fetch(`https://spaceb.in/api/v1/documents/${dbId}`);
+                        const json = await res.json();
+                        catalogData = JSON.parse(json.payload.content);
+                        renderApp();
+                    } catch (err1) {
+                        const fallbackRes = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(`https://spaceb.in/api/v1/documents/${dbId}`)}`);
+                        const fallbackJson = await fallbackRes.json();
+                        const spacebinData = JSON.parse(fallbackJson.contents);
+                        catalogData = JSON.parse(spacebinData.payload.content);
+                        renderApp();
+                    }
+                }
             } catch (e) {
-                document.getElementById('emptyState').innerText = "Gagal memproses data keamanan.";
+                document.getElementById('emptyState').innerText = "Gagal mengunduh database cloud.";
                 document.getElementById('emptyState').style.display = "block";
             }
         }

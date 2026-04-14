@@ -3,51 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Katalog VOD</title>
+    <title>VOD Premium</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        :root { --bg: #0f0f0f; --card: #1a1a1a; --primary: #E50914; --text: #ffffff; --text-muted: #aaaaaa; }
-        * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-        body { margin: 0; padding: 0; background-color: var(--bg); color: var(--text); overflow-x: hidden; }
-        .header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: rgba(15, 15, 15, 0.9); backdrop-filter: blur(10px); z-index: 100; border-bottom: 1px solid #333; }
-        .app-title { font-size: 18px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 50vw; }
+        :root { --bg: #0f0f0f; --card: #1a1a1a; --primary: #E50914; --text: #ffffff; --text-muted: #888888; }
+        * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { margin: 0; padding: 0; background-color: var(--bg); color: var(--text); overflow-x: hidden; padding-bottom: 70px; }
+        .header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: rgba(15, 15, 15, 0.85); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); z-index: 100; border-bottom: 1px solid #222; }
+        .app-title { font-size: 20px; font-weight: 800; background: linear-gradient(90deg, #fff, #aaa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 50vw; }
         .user-profile { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
         .user-info-text { display: flex; flex-direction: column; align-items: flex-end; }
         .user-name { font-size: 13px; font-weight: 700; }
         .user-id { font-size: 10px; color: var(--text-muted); }
         .user-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid #333; }
+        .view-section { display: none; animation: fadeIn 0.3s; }
+        .view-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .search-container { padding: 15px 20px 0; }
-        .search-bar { width: 100%; padding: 12px 15px; border-radius: 8px; border: none; background: #222; color: #fff; font-size: 14px; outline: none; transition: 0.3s; }
+        .search-bar { width: 100%; padding: 12px 15px; border-radius: 12px; border: none; background: #222; color: #fff; font-size: 14px; outline: none; transition: 0.3s; }
         .search-bar:focus { background: #2a2a2a; box-shadow: 0 0 0 2px var(--primary); }
         .filter-container { display: flex; gap: 10px; padding: 15px 20px; overflow-x: auto; scrollbar-width: none; }
         .filter-container::-webkit-scrollbar { display: none; }
         .filter-btn { padding: 8px 16px; border-radius: 20px; border: 1px solid #444; background: transparent; color: #ccc; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: 0.3s; }
         .filter-btn.active { background: var(--text); color: var(--bg); border-color: var(--text); }
-        .hero-banner { margin: 0 20px 20px; border-radius: 12px; overflow: hidden; position: relative; height: 200px; display: none; cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
-        .hero-banner img { width: 100%; height: 100%; object-fit: cover; }
-        .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(15,15,15,1) 0%, rgba(15,15,15,0) 100%); display: flex; flex-direction: column; justify-content: flex-end; padding: 20px; }
-        .hero-badge { background: var(--primary); color: #fff; font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 4px; width: max-content; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; }
-        .hero-title { font-size: 22px; font-weight: 800; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .hero-banner { margin: 0 20px 20px; border-radius: 12px; overflow: hidden; position: relative; height: 220px; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        .hero-banner img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(15,15,15,1) 0%, rgba(15,15,15,0) 100%); display: flex; flex-direction: column; justify-content: flex-end; padding: 20px; pointer-events: none; }
+        .hero-content { z-index: 2; pointer-events: auto; }
+        .hero-badge { background: var(--primary); color: #fff; font-size: 10px; font-weight: 800; padding: 4px 8px; border-radius: 4px; width: max-content; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .hero-title { font-size: 22px; font-weight: 800; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.9); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.2; cursor: pointer; }
         .grid-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 0 20px 30px; }
-        .movie-card { border-radius: 8px; overflow: hidden; background-color: var(--card); cursor: pointer; position: relative; transition: 0.2s; display: flex; flex-direction: column; }
+        .movie-card { border-radius: 12px; overflow: hidden; background-color: var(--card); position: relative; transition: 0.2s; display: flex; flex-direction: column; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
         .movie-card:active { transform: scale(0.96); }
-        .movie-poster-container { position: relative; width: 100%; padding-top: 150%; background: #222; }
+        .movie-poster-container { position: relative; width: 100%; padding-top: 150%; background: #222; cursor: pointer; }
         .movie-poster-container img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.5s; }
         .movie-poster-container img.loaded { opacity: 1; }
-        .movie-info { padding: 10px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
-        .movie-title { font-size: 13px; font-weight: 600; line-height: 1.3; margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .movie-info { padding: 12px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .movie-title-box { display: flex; justify-content: space-between; align-items: flex-start; gap: 5px; margin-bottom: 8px; }
+        .movie-title { font-size: 13px; font-weight: 700; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; flex-grow: 1; }
+        .fav-btn { background: none; border: none; color: #555; padding: 0; font-size: 20px; line-height: 1; cursor: pointer; transition: 0.2s; outline: none; flex-shrink: 0; }
+        .fav-btn.active { color: var(--primary); transform: scale(1.1); }
         .movie-tags { display: flex; justify-content: space-between; align-items: center; }
-        .tag-prem { color: var(--primary); font-size: 10px; font-weight: 800; border: 1px solid var(--primary); padding: 2px 5px; border-radius: 4px; }
-        .tag-free { color: #28a745; font-size: 10px; font-weight: 800; border: 1px solid #28a745; padding: 2px 5px; border-radius: 4px; }
+        .tag-prem { color: var(--primary); font-size: 10px; font-weight: 800; border: 1px solid var(--primary); padding: 3px 6px; border-radius: 4px; }
+        .tag-free { color: #28a745; font-size: 10px; font-weight: 800; border: 1px solid #28a745; padding: 3px 6px; border-radius: 4px; }
+        .play-indicator { font-size: 10px; font-weight: 800; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
         .shimmer { animation: shimmer 1.5s infinite linear; background: linear-gradient(to right, #222 4%, #333 25%, #222 36%); background-size: 1000px 100%; }
         @keyframes shimmer { 0% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } }
-        .empty-state { text-align: center; padding: 50px 20px; color: var(--text-muted); font-size: 14px; font-weight: 500; display: none; }
+        .empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); font-size: 15px; font-weight: 600; display: none; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 60px; background: rgba(15, 15, 15, 0.95); border-top: 1px solid #222; display: flex; justify-content: space-around; align-items: center; backdrop-filter: blur(10px); z-index: 1000; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 33%; height: 100%; color: var(--text-muted); font-size: 10px; font-weight: 600; text-transform: uppercase; cursor: pointer; transition: 0.3s; }
+        .nav-item svg { width: 22px; height: 22px; margin-bottom: 4px; fill: currentColor; }
+        .nav-item.active { color: var(--text); }
+        .nav-item.active svg { fill: var(--text); }
+        .tab-title { padding: 20px 20px 15px; font-size: 22px; font-weight: 800; border-bottom: 1px solid #222; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
     </style>
 </head>
 <body>
-
     <div class="header">
-        <div class="app-title" id="botTitle">VOD</div>
+        <div class="app-title" id="botTitle">VOD Premium</div>
         <div class="user-profile" id="userProfile">
             <div class="user-info-text">
                 <span class="user-name" id="userName">Guest</span>
@@ -57,56 +70,97 @@
         </div>
     </div>
 
-    <div class="search-container">
-        <input type="text" id="searchInput" class="search-bar" placeholder="Cari judul drama...">
+    <div id="view-home" class="view-section active">
+        <div class="search-container">
+            <input type="text" id="searchInput" class="search-bar" placeholder="Cari film atau serial...">
+        </div>
+        <div class="filter-container">
+            <button class="filter-btn active" data-filter="all">Semua</button>
+            <button class="filter-btn" data-filter="prem">💎 Premium</button>
+            <button class="filter-btn" data-filter="free">🆓 Gratis</button>
+        </div>
+        <div class="hero-banner" id="heroBanner">
+            <div class="shimmer" style="width:100%; height:100%; position:absolute; top:0; left:0; z-index:1;" id="heroShimmer"></div>
+            <img id="heroImg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Hero">
+            <div class="hero-overlay" style="z-index:2;">
+                <div class="hero-content">
+                    <div class="hero-badge" id="heroBadge">PREMIUM</div>
+                    <h2 class="hero-title" id="heroTitle">Memuat...</h2>
+                </div>
+            </div>
+        </div>
+        <div class="grid-container" id="homeGrid"></div>
+        <div id="homeEmpty" class="empty-state">Data tidak ditemukan.</div>
     </div>
 
-    <div class="filter-container">
-        <button class="filter-btn active" data-filter="all">Semua</button>
-        <button class="filter-btn" data-filter="prem">💎 Premium</button>
-        <button class="filter-btn" data-filter="free">🆓 Gratis</button>
+    <div id="view-fav" class="view-section">
+        <div class="tab-title">
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="var(--primary)"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+            Koleksi Saya
+        </div>
+        <div class="grid-container" id="favGrid"></div>
+        <div id="favEmpty" class="empty-state">Anda belum menambahkan drama apapun ke Koleksi. Tekan ikon Bintang di pojok kartu untuk menyimpan.</div>
     </div>
 
-    <div class="hero-banner" id="heroBanner">
-        <div class="shimmer" style="width:100%; height:100%; position:absolute; top:0; left:0; z-index:1;" id="heroShimmer"></div>
-        <img id="heroImg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Hero">
-        <div class="hero-overlay" id="heroOverlay" style="z-index:2;">
-            <div class="hero-badge" id="heroBadge">PREMIUM</div>
-            <h2 class="hero-title" id="heroTitle">Memuat...</h2>
+    <div id="view-hist" class="view-section">
+        <div class="tab-title">
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="var(--text)"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+            Riwayat Tontonan
+        </div>
+        <div class="grid-container" id="histGrid"></div>
+        <div id="histEmpty" class="empty-state">Anda belum pernah menonton drama apapun melalui WebApp ini. Riwayat Anda akan otomatis tersimpan di sini.</div>
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-item active" data-tab="home">
+            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            <span>Beranda</span>
+        </div>
+        <div class="nav-item" data-tab="fav">
+            <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+            <span>Koleksi</span>
+        </div>
+        <div class="nav-item" data-tab="hist">
+            <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+            <span>Riwayat</span>
         </div>
     </div>
-
-    <div class="grid-container" id="catalogGrid"></div>
-    <div id="emptyState" class="empty-state">Tidak ada drama ditemukan.</div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        const user = tg.initDataUnsafe?.user;
-        if (user) {
-            const lastName = user.last_name ? " " + user.last_name : "";
-            const fullName = user.first_name + lastName;
-            document.getElementById('userName').innerText = fullName;
-            document.getElementById('userId').innerText = "ID: " + user.id;
-            document.getElementById('userAvatar').src = user.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.first_name)}&background=1a1a1a&color=fff`;
-        }
-
-        const urlParams = new URLSearchParams(window.location.search);
-        const tgPath = urlParams.get('tg_path');
-        const encodedToken = urlParams.get('token');
-        let dynamicBotUsername = "Bot";
         let botToken = "";
-
-        if (encodedToken) {
-            botToken = atob(encodedToken.replace(/-/g, '+').replace(/_/g, '/'));
-        }
-
+        let dynamicBotUsername = "Bot";
         let catalogData =[];
         let currentFilter = 'all';
 
+        let favorites = JSON.parse(localStorage.getItem('fav_v1')) ||[];
+        let historyList = JSON.parse(localStorage.getItem('hist_v1')) ||[];
+
+        const hapticLight = () => { if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light'); };
+        const hapticHeavy = () => { if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy'); };
+
+        function updateStorage() {
+            localStorage.setItem('fav_v1', JSON.stringify(favorites));
+            localStorage.setItem('hist_v1', JSON.stringify(historyList));
+        }
+
         async function initApp() {
-            if (botToken) {
+            const user = tg.initDataUnsafe?.user;
+            if (user) {
+                const fullName = user.first_name + (user.last_name ? " " + user.last_name : "");
+                document.getElementById('userName').innerText = fullName;
+                document.getElementById('userId').innerText = "ID: " + user.id;
+                document.getElementById('userAvatar').src = user.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.first_name)}&background=1a1a1a&color=fff`;
+            }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const tgPath = urlParams.get('tg_path');
+            const encodedToken = urlParams.get('token');
+
+            if (encodedToken) {
+                botToken = atob(encodedToken.replace(/-/g, '+').replace(/_/g, '/'));
                 try {
                     const res = await fetch(`https://api.telegram.org/bot${botToken}/getMe`);
                     const json = await res.json();
@@ -118,8 +172,8 @@
             }
 
             if (!tgPath) {
-                document.getElementById('emptyState').innerText = "Akses ditolak. Hubungi Server.";
-                document.getElementById('emptyState').style.display = "block";
+                document.getElementById('homeEmpty').innerText = "Hubungi Server Utama. Kode Parameter Tidak Diketahui.";
+                document.getElementById('homeEmpty').style.display = "block";
                 return;
             }
 
@@ -127,29 +181,21 @@
                 if (tgPath.startsWith("B64_")) {
                     const b64 = tgPath.replace("B64_", "").replace(/-/g, '+').replace(/_/g, '/');
                     catalogData = JSON.parse(decodeURIComponent(escape(atob(b64))));
-                    renderApp();
                 } else {
-                    const teleGraphUrl = `https://api.telegra.ph/getPage/${tgPath}?return_content=true`;
-                    const graphRes = await fetch(teleGraphUrl);
+                    const graphRes = await fetch(`https://api.telegra.ph/getPage/${tgPath}?return_content=true`);
                     const graphJson = await graphRes.json();
-                    
-                    if(graphJson.ok) {
+                    if (graphJson.ok) {
                         let finalStr = "";
-                        const nodeArray = graphJson.result.content;
-                        for (let node of nodeArray) {
-                            if(node.children && node.children.length > 0) {
-                                finalStr += node.children[0];
-                            }
-                        }
+                        graphJson.result.content.forEach(node => {
+                            if(node.children) finalStr += node.children[0];
+                        });
                         catalogData = JSON.parse(finalStr);
-                        renderApp();
-                    } else {
-                        throw new Error();
                     }
                 }
+                renderAllTabs();
             } catch (e) {
-                document.getElementById('emptyState').innerText = "Gagal mengambil sinkronisasi cloud dari Telegram.";
-                document.getElementById('emptyState').style.display = "block";
+                document.getElementById('homeEmpty').innerText = "Kesalahan Sistem Parsing. Bot DB Bermasalah.";
+                document.getElementById('homeEmpty').style.display = "block";
             }
         }
 
@@ -158,7 +204,6 @@
             const cacheKey = `tg_img_${fileId}`;
             const cached = sessionStorage.getItem(cacheKey);
             if (cached) return cached;
-
             try {
                 const response = await fetch(`https://api.telegram.org/bot${botToken}/getFile?file_id=${fileId}`);
                 const json = await response.json();
@@ -171,96 +216,171 @@
             return null;
         }
 
-        function playMovie(id) {
-            tg.openTelegramLink(`https://t.me/${dynamicBotUsername}?start=mp_${id}`);
-            tg.close();
+        function createCard(item, containerId) {
+            const card = document.createElement('div');
+            card.className = 'movie-card';
+
+            const isFav = favorites.includes(item.id);
+            const badgeClass = item.is_prem ? 'tag-prem' : 'tag-free';
+            const badgeText = item.is_prem ? 'Premium' : 'Gratis';
+            const favIcon = isFav ? '★' : '☆';
+            const favClass = isFav ? 'fav-btn active' : 'fav-btn';
+
+            card.innerHTML = `
+                <div class="movie-poster-container shimmer" id="shimmer-${containerId}-${item.id}">
+                    <img id="img-${containerId}-${item.id}" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Poster">
+                </div>
+                <div class="movie-info">
+                    <div class="movie-title-box">
+                        <div class="movie-title">${item.t}</div>
+                        <button class="${favClass}" id="btn-fav-${containerId}-${item.id}">${favIcon}</button>
+                    </div>
+                    <div class="movie-tags">
+                        <span class="${badgeClass}">${badgeText}</span>
+                        <span class="play-indicator">
+                            <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> Play
+                        </span>
+                    </div>
+                </div>
+            `;
+
+            card.querySelector('.movie-poster-container').onclick = () => {
+                hapticHeavy();
+                historyList = [item.id, ...historyList.filter(i => i !== item.id)].slice(0, 20);
+                updateStorage();
+                renderTabHist();
+                tg.openTelegramLink(`https://t.me/${dynamicBotUsername}?start=mp_${item.id}`);
+                tg.close();
+            };
+
+            const favBtn = card.querySelector(`#btn-fav-${containerId}-${item.id}`);
+            favBtn.onclick = (e) => {
+                e.stopPropagation();
+                hapticLight();
+                if (favorites.includes(item.id)) {
+                    favorites = favorites.filter(id => id !== item.id);
+                    favBtn.className = 'fav-btn';
+                    favBtn.innerText = '☆';
+                } else {
+                    favorites.unshift(item.id);
+                    favBtn.className = 'fav-btn active';
+                    favBtn.innerText = '★';
+                }
+                updateStorage();
+                renderTabFav();
+            };
+
+            document.getElementById(containerId).appendChild(card);
+
+            fetchImage(item.p).then(url => {
+                if (url) {
+                    const imgEl = document.getElementById(`img-${containerId}-${item.id}`);
+                    if(imgEl) {
+                        imgEl.src = url;
+                        imgEl.onload = () => {
+                            imgEl.classList.add('loaded');
+                            const shimmer = document.getElementById(`shimmer-${containerId}-${item.id}`);
+                            if(shimmer) shimmer.classList.remove('shimmer');
+                        };
+                    }
+                }
+            });
         }
 
-        function renderApp() {
+        function renderTabHome() {
             const query = document.getElementById('searchInput').value.toLowerCase();
-            const grid = document.getElementById('catalogGrid');
+            const grid = document.getElementById('homeGrid');
             const hero = document.getElementById('heroBanner');
-            const emptyState = document.getElementById('emptyState');
+            const empty = document.getElementById('homeEmpty');
             
             grid.innerHTML = '';
             hero.style.display = 'none';
-            emptyState.style.display = 'none';
+            empty.style.display = 'none';
 
-            let filteredData = catalogData.filter(item => {
-                const matchQuery = item.t.toLowerCase().includes(query);
-                const matchFilter = currentFilter === 'all' || 
-                                  (currentFilter === 'prem' && item.is_prem === 1) || 
-                                  (currentFilter === 'free' && item.is_prem === 0);
-                return matchQuery && matchFilter;
+            let filtered = catalogData.filter(item => {
+                return item.t.toLowerCase().includes(query) && 
+                      (currentFilter === 'all' || (currentFilter === 'prem' && item.is_prem === 1) || (currentFilter === 'free' && item.is_prem === 0));
             });
 
-            if (filteredData.length === 0) {
-                emptyState.style.display = 'block';
-                return;
-            }
+            if (filtered.length === 0) { empty.style.display = 'block'; return; }
 
-            if (query === '' && currentFilter === 'all' && filteredData.length > 0) {
-                const featured = filteredData[0];
+            if (query === '' && currentFilter === 'all') {
+                const f = filtered[0];
                 hero.style.display = 'block';
-                document.getElementById('heroTitle').innerText = featured.t;
-                const badge = document.getElementById('heroBadge');
-                badge.innerText = featured.is_prem ? 'PREMIUM' : 'GRATIS';
-                badge.style.backgroundColor = featured.is_prem ? 'var(--primary)' : '#28a745';
-                hero.onclick = () => playMovie(featured.id);
+                document.getElementById('heroTitle').innerText = f.t;
+                document.getElementById('heroBadge').innerText = f.is_prem ? 'PREMIUM' : 'GRATIS';
+                document.getElementById('heroBadge').style.background = f.is_prem ? 'var(--primary)' : '#28a745';
+                hero.onclick = () => {
+                    hapticHeavy();
+                    historyList = [f.id, ...historyList.filter(i => i !== f.id)].slice(0, 20);
+                    updateStorage();
+                    tg.openTelegramLink(`https://t.me/${dynamicBotUsername}?start=mp_${f.id}`);
+                    tg.close();
+                };
 
-                fetchImage(featured.p).then(url => {
+                fetchImage(f.p).then(url => {
                     if (url) {
                         document.getElementById('heroImg').src = url;
                         document.getElementById('heroShimmer').style.display = 'none';
                     }
                 });
-                
-                filteredData = filteredData.slice(1);
+                filtered = filtered.slice(1);
             }
 
-            filteredData.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'movie-card';
-                card.onclick = () => playMovie(item.id);
-
-                const badgeClass = item.is_prem ? 'tag-prem' : 'tag-free';
-                const badgeText = item.is_prem ? 'Premium' : 'Gratis';
-
-                card.innerHTML = `
-                    <div class="movie-poster-container shimmer" id="shimmer-${item.id}">
-                        <img id="img-${item.id}" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Poster">
-                    </div>
-                    <div class="movie-info">
-                        <div class="movie-title">${item.t}</div>
-                        <div class="movie-tags">
-                            <span class="${badgeClass}">${badgeText}</span>
-                            <span style="font-size:10px; color:#666;">▶ Play</span>
-                        </div>
-                    </div>
-                `;
-                grid.appendChild(card);
-
-                fetchImage(item.p).then(url => {
-                    if (url) {
-                        const imgEl = document.getElementById(`img-${item.id}`);
-                        imgEl.src = url;
-                        imgEl.onload = () => {
-                            imgEl.classList.add('loaded');
-                            document.getElementById(`shimmer-${item.id}`).classList.remove('shimmer');
-                        };
-                    }
-                });
-            });
+            filtered.forEach(item => createCard(item, 'homeGrid'));
         }
 
-        document.getElementById('searchInput').addEventListener('input', renderApp);
+        function renderTabFav() {
+            const grid = document.getElementById('favGrid');
+            const empty = document.getElementById('favEmpty');
+            grid.innerHTML = '';
+            empty.style.display = 'none';
+
+            const items = catalogData.filter(i => favorites.includes(i.id)).sort((a,b) => favorites.indexOf(a.id) - favorites.indexOf(b.id));
+            if(items.length === 0) { empty.style.display = 'block'; return; }
+            items.forEach(item => createCard(item, 'favGrid'));
+        }
+
+        function renderTabHist() {
+            const grid = document.getElementById('histGrid');
+            const empty = document.getElementById('histEmpty');
+            grid.innerHTML = '';
+            empty.style.display = 'none';
+
+            const items = catalogData.filter(i => historyList.includes(i.id)).sort((a,b) => historyList.indexOf(a.id) - historyList.indexOf(b.id));
+            if(items.length === 0) { empty.style.display = 'block'; return; }
+            items.forEach(item => createCard(item, 'histGrid'));
+        }
+
+        function renderAllTabs() {
+            renderTabHome();
+            renderTabFav();
+            renderTabHist();
+        }
+
+        document.getElementById('searchInput').addEventListener('input', () => { renderTabHome(); });
         
         document.querySelectorAll('.filter-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
+                hapticLight();
                 document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
                 e.target.classList.add('active');
                 currentFilter = e.target.getAttribute('data-filter');
-                renderApp();
+                renderTabHome();
+            });
+        });
+
+        document.querySelectorAll('.nav-item').forEach(nav => {
+            nav.addEventListener('click', (e) => {
+                hapticLight();
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                const target = e.currentTarget;
+                target.classList.add('active');
+                const tabId = target.getAttribute('data-tab');
+                document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+                document.getElementById('view-' + tabId).classList.add('active');
+                if(tabId === 'fav') renderTabFav();
+                if(tabId === 'hist') renderTabHist();
             });
         });
 

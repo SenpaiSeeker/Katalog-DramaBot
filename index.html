@@ -133,6 +133,7 @@
         let botToken = "";
         let dynamicBotUsername = "Bot";
         let catalogData =[];
+        let tgPath = "";
         let currentFilter = 'all';
 
         let favorites = JSON.parse(localStorage.getItem('fav_v1')) ||[];
@@ -156,12 +157,15 @@
             }
 
             const urlParams = new URLSearchParams(window.location.search);
-            const tgPath = urlParams.get('tg_path');
-            const encodedToken = urlParams.get('token');
+            const encodedPayload = urlParams.get('token');
 
-            if (encodedToken) {
-                botToken = atob(encodedToken.replace(/-/g, '+').replace(/_/g, '/'));
+            if (encodedPayload) {
                 try {
+                    const decodedPayload = atob(encodedPayload.replace(/-/g, '+').replace(/_/g, '/'));
+                    const parts = decodedPayload.split('|');
+                    botToken = parts[0];
+                    tgPath = parts[1] || "";
+                    
                     const res = await fetch(`https://api.telegram.org/bot${botToken}/getMe`);
                     const json = await res.json();
                     if (json.ok) {
@@ -172,7 +176,7 @@
             }
 
             if (!tgPath) {
-                document.getElementById('homeEmpty').innerText = "Hubungi Server Utama. Kode Parameter Tidak Diketahui.";
+                document.getElementById('homeEmpty').innerText = "Sistem Parameter Error.";
                 document.getElementById('homeEmpty').style.display = "block";
                 return;
             }
@@ -194,7 +198,7 @@
                 }
                 renderAllTabs();
             } catch (e) {
-                document.getElementById('homeEmpty').innerText = "Kesalahan Sistem Parsing. Bot DB Bermasalah.";
+                document.getElementById('homeEmpty').innerText = "Gagal membongkar Payload Engine.";
                 document.getElementById('homeEmpty').style.display = "block";
             }
         }
@@ -246,7 +250,7 @@
 
             card.querySelector('.movie-poster-container').onclick = () => {
                 hapticHeavy();
-                historyList = [item.id, ...historyList.filter(i => i !== item.id)].slice(0, 20);
+                historyList =[item.id, ...historyList.filter(i => i !== item.id)].slice(0, 20);
                 updateStorage();
                 renderTabHist();
                 tg.openTelegramLink(`https://t.me/${dynamicBotUsername}?start=mp_${item.id}`);

@@ -54,10 +54,10 @@
         .filter-btn { padding: 8px 16px; border-radius: 20px; border: 1px solid var(--card); background: transparent; color: var(--text-muted); font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: 0.3s; }
         .filter-btn.active { background: var(--text); color: var(--bg); border-color: var(--text); }
         
-        .hero-banner { margin: 0 20px 20px; border-radius: 12px; overflow: hidden; position: relative; height: 220px; box-shadow: 0 10px 20px var(--shadow); background-color: var(--card); transition: box-shadow 0.3s; cursor:pointer;}
-        .hero-banner img { width: 100%; height: 100%; object-fit: contain; display: block; }
-        .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, var(--bg) 0%, rgba(0,0,0,0) 100%); display: flex; flex-direction: column; justify-content: flex-end; padding: 20px; pointer-events: none; opacity: 0.8;}
-        body.dark-theme .hero-overlay { background: linear-gradient(to top, #0f0f0f 0%, rgba(15,15,15,0) 100%); }
+        .hero-banner { margin: 0 20px 20px; border-radius: 12px; overflow: hidden; position: relative; height: 300px; box-shadow: 0 10px 20px var(--shadow); background-color: var(--card); transition: box-shadow 0.3s; cursor:pointer;}
+        .hero-banner img { width: 100%; height: 100%; object-fit: cover; display: block; object-position: center top;}
+        .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, var(--bg) 0%, rgba(0,0,0,0) 80%); display: flex; flex-direction: column; justify-content: flex-end; padding: 20px; pointer-events: none; opacity: 1;}
+        body.dark-theme .hero-overlay { background: linear-gradient(to top, #0f0f0f 0%, rgba(15,15,15,0) 80%); }
         .hero-content { z-index: 2; pointer-events: auto; }
         .hero-badge { background: var(--badge-prem); color: #fff; font-size: 10px; font-weight: 800; padding: 4px 8px; border-radius: 4px; width: max-content; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
         .hero-title { font-size: 22px; font-weight: 800; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.2; color:#fff;}
@@ -65,8 +65,8 @@
         .grid-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 0 20px 10px; }
         .movie-card { border-radius: 12px; overflow: hidden; background-color: var(--card); position: relative; transition: 0.2s, background-color 0.3s; display: flex; flex-direction: column; box-shadow: 0 4px 10px var(--shadow); cursor:pointer;}
         .movie-card:active { transform: scale(0.96); }
-        .movie-poster-container { position: relative; width: 100%; padding-top: 150%; background: var(--bg); transition: background-color 0.3s; }
-        .movie-poster-container img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; opacity: 0; transition: opacity 0.5s; padding:5px;}
+        .movie-poster-container { position: relative; width: 100%; aspect-ratio: 2 / 3; background: var(--bg); transition: background-color 0.3s; overflow: hidden; }
+        .movie-poster-container img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.5s; object-position: center;}
         .movie-poster-container img.loaded { opacity: 1; }
         
         .movie-info { padding: 12px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
@@ -194,7 +194,7 @@
         let currentFilter = 'all';
         let searchQuery = '';
 
-        const ITEMS_PER_PAGE = 4;
+        const ITEMS_PER_PAGE = 10;
         const pageState = { home: 1, fav: 1, hist: 1 };
         
         let favorites = JSON.parse(localStorage.getItem('fav_v2')) ||[];

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Katalog</title>
+    <title>Xiao Reels</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
@@ -45,10 +45,10 @@
         
         .header { padding: 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: var(--bg); opacity: 0.98; z-index: 100; transition: background-color 0.3s; box-shadow: 0 4px 10px var(--shadow); }
         
-        .header-left { display: flex; align-items: center; gap: 8px; }
-        .play-logo { width: 32px; height: 32px; background-color: var(--card); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 10px rgba(92,32,218,0.4); }
+        .header-left { display: flex; align-items: center; gap: 8px; overflow: hidden; }
+        .play-logo { width: 32px; height: 32px; background-color: var(--card); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 10px rgba(92,32,218,0.4); flex-shrink: 0;}
         .play-logo svg { width: 14px; height: 14px; fill: var(--accent); margin-left: 2px; }
-        .app-title { font-size: 18px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 45vw; display: flex; align-items: center; gap: 5px; }
+        .app-title { font-size: 18px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
         
         .header-right { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
         .theme-btn { background: var(--card); border: 1px solid var(--card); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 5px var(--shadow); }
@@ -60,10 +60,15 @@
         .user-id { font-size: 10px; color: var(--text-muted); }
         .user-avatar { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; border: 2px solid var(--card); transition: border-color 0.3s; }
         
-        .search-box { margin: 15px; background: var(--card); border-radius: 12px; display: flex; align-items: center; padding: 10px 15px; box-shadow: inset 0 2px 4px var(--shadow); transition: 0.3s; border: 1px solid transparent; }
+        .search-box { margin: 15px 15px 0; background: var(--card); border-radius: 12px; display: flex; align-items: center; padding: 10px 15px; box-shadow: inset 0 2px 4px var(--shadow); transition: 0.3s; border: 1px solid transparent; }
         .search-box:focus-within { border-color: var(--primary); }
         .search-box svg { width: 18px; height: 18px; fill: var(--text-muted); flex-shrink: 0; margin-right: 10px; }
         .search-box input { flex-grow: 1; border: none; background: transparent; color: var(--text); font-size: 14px; outline: none; }
+        
+        .filter-container { display: flex; gap: 10px; padding: 15px; overflow-x: auto; scrollbar-width: none; }
+        .filter-container::-webkit-scrollbar { display: none; }
+        .filter-btn { padding: 8px 16px; border-radius: 20px; border: 1px solid var(--card); background: var(--card); color: var(--text-muted); font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: 0.3s; box-shadow: 0 2px 4px var(--shadow);}
+        .filter-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
         
         .view-section { display: none; animation: fadeIn 0.3s; }
         .view-section.active { display: block; }
@@ -144,6 +149,12 @@
             <input type="text" id="searchInput" placeholder="Cari film atau serial...">
         </div>
         
+        <div class="filter-container">
+            <button class="filter-btn active" data-filter="all">Semua</button>
+            <button class="filter-btn" data-filter="prem">💎 Premium</button>
+            <button class="filter-btn" data-filter="free">🆓 Gratis</button>
+        </div>
+
         <div class="grid-container" id="homeGrid"></div>
         
         <div class="pagination-container" id="homePagination" style="display:none;">
@@ -220,7 +231,9 @@
         let botToken = "";
         let dynamicBotUsername = "Bot";
         let catalogData =[];
-        
+        let currentFilter = 'all';
+        let searchQuery = '';
+
         const ITEMS_PER_PAGE = 10;
         const pageState = { home: 1, fav: 1, hist: 1 };
         
@@ -238,11 +251,20 @@
         }
 
         function applyTheme() {
-            if(isDarkMode) document.body.classList.add('dark-theme');
-            else document.body.classList.remove('dark-theme');
+            if(isDarkMode) {
+                document.body.classList.add('dark-theme');
+                document.body.classList.remove('light-theme');
+            } else {
+                document.body.classList.add('light-theme');
+                document.body.classList.remove('dark-theme');
+            }
             
-            if(tg.setHeaderColor) tg.setHeaderColor(isDarkMode ? '#09041a' : '#f4f4f6');
-            if(tg.setBackgroundColor) tg.setBackgroundColor(isDarkMode ? '#09041a' : '#f4f4f6');
+            if(tg.setHeaderColor) {
+                tg.setHeaderColor(isDarkMode ? '#09041a' : '#f4f4f6');
+            }
+            if(tg.setBackgroundColor) {
+                tg.setBackgroundColor(isDarkMode ? '#09041a' : '#f4f4f6');
+            }
             updateThemeIcon();
         }
         applyTheme();
@@ -301,16 +323,16 @@
                         .then(json => {
                             if (json.ok) {
                                 dynamicBotUsername = json.result.username;
-                                document.getElementById('botTitle').innerText = json.result.first_name.substring(0, 15);
+                                document.getElementById('botTitle').innerText = json.result.first_name;
                             }
                         }).catch(()=>{});
 
                     renderAllTabs();
                 } catch (e) {
-                    showError("Decryption error.");
+                    showError("Kesalahan Dekripsi Payload.");
                 }
             } else {
-                 showError("Payload missing.");
+                 showError("Parameter Keamanan Tidak Lengkap.");
             }
         }
 
@@ -452,7 +474,8 @@
         function getFilteredData(sourceData) {
             const query = document.getElementById('searchInput').value.toLowerCase();
             return sourceData.filter(item => {
-                return item.t.toLowerCase().includes(query);
+                return item.t.toLowerCase().includes(query) && 
+                      (currentFilter === 'all' || (currentFilter === 'prem' && item.is_prem === 1) || (currentFilter === 'free' && item.is_prem === 0));
             });
         }
 
@@ -538,6 +561,17 @@
         document.getElementById('searchInput').addEventListener('input', () => { 
             pageState.home = 1; pageState.fav = 1; pageState.hist = 1;
             renderAllTabs(); 
+        });
+        
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                hapticLight();
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                currentFilter = e.target.getAttribute('data-filter');
+                pageState.home = 1; pageState.fav = 1; pageState.hist = 1;
+                renderAllTabs();
+            });
         });
 
         document.querySelectorAll('.nav-item').forEach(nav => {

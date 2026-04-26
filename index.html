@@ -3,65 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VOD Premium</title>
+    <title>Katalog Premium</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        :root { --bg: #0f0f0f; --card: #1a1a1a; --primary: #E50914; --text: #ffffff; --text-muted: #888888; }
+        :root {
+            --bg: var(--tg-theme-bg-color, #ffffff);
+            --card: var(--tg-theme-secondary-bg-color, #f4f4f4);
+            --primary: var(--tg-theme-button-color, #E50914);
+            --text: var(--tg-theme-text-color, #000000);
+            --text-muted: var(--tg-theme-hint-color, #888888);
+            --badge-prem: var(--primary);
+            --badge-free: #28a745;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --shimmer-bg: #e0e0e0;
+            --shimmer-accent: #f0f0f0;
+        }
+
+        body.dark-theme {
+            --bg: #0f0f0f;
+            --card: #1a1a1a;
+            --primary: #E50914;
+            --text: #ffffff;
+            --text-muted: #888888;
+            --shadow: rgba(0, 0, 0, 0.5);
+            --shimmer-bg: #222;
+            --shimmer-accent: #333;
+        }
+
         * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { margin: 0; padding: 0; background-color: var(--bg); color: var(--text); overflow-x: hidden; padding-bottom: 70px; }
-        .header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: rgba(15, 15, 15, 0.85); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); z-index: 100; border-bottom: 1px solid #222; }
-        .app-title { font-size: 20px; font-weight: 800; background: linear-gradient(90deg, #fff, #aaa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 50vw; }
-        .user-profile { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+        body { margin: 0; padding: 0; background-color: var(--bg); color: var(--text); overflow-x: hidden; padding-bottom: 70px; transition: background-color 0.3s, color 0.3s; }
+        
+        .header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: var(--bg); opacity: 0.95; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); z-index: 100; border-bottom: 1px solid var(--card); transition: background-color 0.3s; }
+        .app-title { font-size: 20px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 50vw; }
+        .user-profile { display: flex; align-items: center; gap: 10px; flex-shrink: 0; cursor: pointer; }
         .user-info-text { display: flex; flex-direction: column; align-items: flex-end; }
         .user-name { font-size: 13px; font-weight: 700; }
         .user-id { font-size: 10px; color: var(--text-muted); }
-        .user-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid #333; }
+        .user-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid var(--card); transition: border-color 0.3s; }
+        
         .view-section { display: none; animation: fadeIn 0.3s; }
         .view-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
         .search-container { padding: 15px 20px 0; }
-        .search-bar { width: 100%; padding: 12px 15px; border-radius: 12px; border: none; background: #222; color: #fff; font-size: 14px; outline: none; transition: 0.3s; }
-        .search-bar:focus { background: #2a2a2a; box-shadow: 0 0 0 2px var(--primary); }
+        .search-bar { width: 100%; padding: 12px 15px; border-radius: 12px; border: 1px solid var(--card); background: var(--card); color: var(--text); font-size: 14px; outline: none; transition: 0.3s; }
+        .search-bar:focus { box-shadow: 0 0 0 2px var(--primary); }
+        
         .filter-container { display: flex; gap: 10px; padding: 15px 20px; overflow-x: auto; scrollbar-width: none; }
         .filter-container::-webkit-scrollbar { display: none; }
-        .filter-btn { padding: 8px 16px; border-radius: 20px; border: 1px solid #444; background: transparent; color: #ccc; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: 0.3s; }
+        .filter-btn { padding: 8px 16px; border-radius: 20px; border: 1px solid var(--card); background: transparent; color: var(--text-muted); font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: 0.3s; }
         .filter-btn.active { background: var(--text); color: var(--bg); border-color: var(--text); }
-        .hero-banner { margin: 0 20px 20px; border-radius: 12px; overflow: hidden; position: relative; height: 220px; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
-        .hero-banner img { width: 100%; height: 100%; object-fit: cover; display: block; }
-        .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(15,15,15,1) 0%, rgba(15,15,15,0) 100%); display: flex; flex-direction: column; justify-content: flex-end; padding: 20px; pointer-events: none; }
+        
+        .hero-banner { margin: 0 20px 20px; border-radius: 12px; overflow: hidden; position: relative; height: 220px; box-shadow: 0 10px 20px var(--shadow); background-color: var(--card); transition: box-shadow 0.3s; cursor:pointer;}
+        .hero-banner img { width: 100%; height: 100%; object-fit: contain; display: block; }
+        .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, var(--bg) 0%, rgba(0,0,0,0) 100%); display: flex; flex-direction: column; justify-content: flex-end; padding: 20px; pointer-events: none; opacity: 0.8;}
+        body.dark-theme .hero-overlay { background: linear-gradient(to top, #0f0f0f 0%, rgba(15,15,15,0) 100%); }
         .hero-content { z-index: 2; pointer-events: auto; }
-        .hero-badge { background: var(--primary); color: #fff; font-size: 10px; font-weight: 800; padding: 4px 8px; border-radius: 4px; width: max-content; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
-        .hero-title { font-size: 22px; font-weight: 800; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.9); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.2; cursor: pointer; }
-        .grid-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 0 20px 30px; }
-        .movie-card { border-radius: 12px; overflow: hidden; background-color: var(--card); position: relative; transition: 0.2s; display: flex; flex-direction: column; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .hero-badge { background: var(--badge-prem); color: #fff; font-size: 10px; font-weight: 800; padding: 4px 8px; border-radius: 4px; width: max-content; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .hero-title { font-size: 22px; font-weight: 800; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.2; color:#fff;}
+        
+        .grid-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 0 20px 10px; }
+        .movie-card { border-radius: 12px; overflow: hidden; background-color: var(--card); position: relative; transition: 0.2s, background-color 0.3s; display: flex; flex-direction: column; box-shadow: 0 4px 10px var(--shadow); cursor:pointer;}
         .movie-card:active { transform: scale(0.96); }
-        .movie-poster-container { position: relative; width: 100%; padding-top: 150%; background: #222; cursor: pointer; }
-        .movie-poster-container img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.5s; }
+        .movie-poster-container { position: relative; width: 100%; padding-top: 150%; background: var(--bg); transition: background-color 0.3s; }
+        .movie-poster-container img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; opacity: 0; transition: opacity 0.5s; padding:5px;}
         .movie-poster-container img.loaded { opacity: 1; }
+        
         .movie-info { padding: 12px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
         .movie-title-box { display: flex; justify-content: space-between; align-items: flex-start; gap: 5px; margin-bottom: 8px; }
         .movie-title { font-size: 13px; font-weight: 700; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; flex-grow: 1; }
-        .fav-btn { background: none; border: none; color: #555; padding: 0; font-size: 20px; line-height: 1; cursor: pointer; transition: 0.2s; outline: none; flex-shrink: 0; }
+        
+        .fav-btn { background: none; border: none; color: var(--text-muted); padding: 0; font-size: 20px; line-height: 1; cursor: pointer; transition: 0.2s, color 0.3s; outline: none; flex-shrink: 0; }
         .fav-btn.active { color: var(--primary); transform: scale(1.1); }
         .movie-tags { display: flex; justify-content: space-between; align-items: center; }
-        .tag-prem { color: var(--primary); font-size: 10px; font-weight: 800; border: 1px solid var(--primary); padding: 3px 6px; border-radius: 4px; }
-        .tag-free { color: #28a745; font-size: 10px; font-weight: 800; border: 1px solid #28a745; padding: 3px 6px; border-radius: 4px; }
+        
+        .tag-prem { color: #fff; background-color: var(--badge-prem); font-size: 10px; font-weight: 800; padding: 3px 6px; border-radius: 4px; }
+        .tag-free { color: #fff; background-color: var(--badge-free); font-size: 10px; font-weight: 800; padding: 3px 6px; border-radius: 4px; }
         .play-indicator { font-size: 10px; font-weight: 800; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
-        .shimmer { animation: shimmer 1.5s infinite linear; background: linear-gradient(to right, #222 4%, #333 25%, #222 36%); background-size: 1000px 100%; }
+        
+        .pagination { display: flex; justify-content: center; align-items: center; gap: 15px; padding: 10px 20px 30px; }
+        .page-btn { padding: 8px 15px; border-radius: 8px; border: none; background: var(--card); color: var(--text); font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 5px var(--shadow); }
+        .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .page-btn:active:not(:disabled) { transform: scale(0.95); }
+        .page-info { font-size: 14px; font-weight: 600; color: var(--text-muted); }
+
+        .shimmer { animation: shimmer 1.5s infinite linear; background: linear-gradient(to right, var(--shimmer-bg) 4%, var(--shimmer-accent) 25%, var(--shimmer-bg) 36%); background-size: 1000px 100%; }
         @keyframes shimmer { 0% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } }
         .empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); font-size: 15px; font-weight: 600; display: none; }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 60px; background: rgba(15, 15, 15, 0.95); border-top: 1px solid #222; display: flex; justify-content: space-around; align-items: center; backdrop-filter: blur(10px); z-index: 1000; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 33%; height: 100%; color: var(--text-muted); font-size: 10px; font-weight: 600; text-transform: uppercase; cursor: pointer; transition: 0.3s; }
-        .nav-item svg { width: 22px; height: 22px; margin-bottom: 4px; fill: currentColor; }
+        
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 60px; background: var(--bg); opacity:0.95; border-top: 1px solid var(--card); display: flex; justify-content: space-around; align-items: center; backdrop-filter: blur(10px); z-index: 1000; transition: background-color 0.3s; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 33%; height: 100%; color: var(--text-muted); font-size: 10px; font-weight: 600; text-transform: uppercase; cursor: pointer; transition: 0.3s, color 0.3s; }
+        .nav-item svg { width: 22px; height: 22px; margin-bottom: 4px; fill: currentColor; transition: fill 0.3s;}
         .nav-item.active { color: var(--text); }
         .nav-item.active svg { fill: var(--text); }
-        .tab-title { padding: 20px 20px 15px; font-size: 22px; font-weight: 800; border-bottom: 1px solid #222; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        
+        .tab-title { padding: 20px 20px 15px; font-size: 22px; font-weight: 800; border-bottom: 1px solid var(--card); margin-bottom: 15px; display: flex; align-items: center; gap: 10px; transition: border-color 0.3s; }
     </style>
 </head>
-<body>
+<body class="dark-theme">
     <div class="header">
         <div class="app-title" id="botTitle">VOD Premium</div>
-        <div class="user-profile" id="userProfile">
+        <div class="user-profile" id="userProfile" onclick="toggleTheme()">
             <div class="user-info-text">
                 <span class="user-name" id="userName">Guest</span>
                 <span class="user-id" id="userId">ID: -</span>
@@ -90,6 +132,11 @@
             </div>
         </div>
         <div class="grid-container" id="homeGrid"></div>
+        <div class="pagination" id="homePagination" style="display:none;">
+            <button class="page-btn" id="prevHome" onclick="changePage('home', -1)">⬅️ Prev</button>
+            <span class="page-info" id="infoHome">1/1</span>
+            <button class="page-btn" id="nextHome" onclick="changePage('home', 1)">Next ➡️</button>
+        </div>
         <div id="homeEmpty" class="empty-state">Data tidak ditemukan.</div>
     </div>
 
@@ -99,7 +146,12 @@
             Koleksi Saya
         </div>
         <div class="grid-container" id="favGrid"></div>
-        <div id="favEmpty" class="empty-state">Anda belum menambahkan drama apapun ke Koleksi. Tekan ikon Bintang di pojok kartu untuk menyimpan.</div>
+        <div class="pagination" id="favPagination" style="display:none;">
+            <button class="page-btn" id="prevFav" onclick="changePage('fav', -1)">⬅️ Prev</button>
+            <span class="page-info" id="infoFav">1/1</span>
+            <button class="page-btn" id="nextFav" onclick="changePage('fav', 1)">Next ➡️</button>
+        </div>
+        <div id="favEmpty" class="empty-state">Anda belum menambahkan drama apapun ke Koleksi.</div>
     </div>
 
     <div id="view-hist" class="view-section">
@@ -108,7 +160,12 @@
             Riwayat Tontonan
         </div>
         <div class="grid-container" id="histGrid"></div>
-        <div id="histEmpty" class="empty-state">Anda belum pernah menonton drama apapun melalui WebApp ini. Riwayat Anda akan otomatis tersimpan di sini.</div>
+        <div class="pagination" id="histPagination" style="display:none;">
+            <button class="page-btn" id="prevHist" onclick="changePage('hist', -1)">⬅️ Prev</button>
+            <span class="page-info" id="infoHist">1/1</span>
+            <button class="page-btn" id="nextHist" onclick="changePage('hist', 1)">Next ➡️</button>
+        </div>
+        <div id="histEmpty" class="empty-state">Anda belum pernah menonton drama apapun melalui WebApp ini.</div>
     </div>
 
     <div class="bottom-nav">
@@ -129,22 +186,47 @@
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
+        tg.ready();
 
         let botToken = "";
         let dynamicBotUsername = "Bot";
         let catalogData =[];
-        let tgPath = "";
         let currentFilter = 'all';
+        let searchQuery = '';
 
-        let favorites = JSON.parse(localStorage.getItem('fav_v1')) ||[];
-        let historyList = JSON.parse(localStorage.getItem('hist_v1')) ||[];
+        const ITEMS_PER_PAGE = 4;
+        const pageState = { home: 1, fav: 1, hist: 1 };
+        
+        let favorites = JSON.parse(localStorage.getItem('fav_v2')) ||[];
+        let historyList = JSON.parse(localStorage.getItem('hist_v2')) ||[];
+        let isDarkMode = localStorage.getItem('theme_v2') === null ? true : localStorage.getItem('theme_v2') === 'dark';
+
+        function applyTheme() {
+            if(isDarkMode) {
+                document.body.classList.add('dark-theme');
+            } else {
+                document.body.classList.remove('dark-theme');
+            }
+            if(tg.setHeaderColor) {
+                tg.setHeaderColor(isDarkMode ? '#0f0f0f' : '#ffffff');
+                tg.setBackgroundColor(isDarkMode ? '#0f0f0f' : '#ffffff');
+            }
+        }
+        applyTheme();
+
+        function toggleTheme() {
+            hapticLight();
+            isDarkMode = !isDarkMode;
+            localStorage.setItem('theme_v2', isDarkMode ? 'dark' : 'light');
+            applyTheme();
+        }
 
         const hapticLight = () => { if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light'); };
         const hapticHeavy = () => { if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy'); };
 
         function updateStorage() {
-            localStorage.setItem('fav_v1', JSON.stringify(favorites));
-            localStorage.setItem('hist_v1', JSON.stringify(historyList));
+            localStorage.setItem('fav_v2', JSON.stringify(favorites));
+            localStorage.setItem('hist_v2', JSON.stringify(historyList));
         }
 
         async function initApp() {
@@ -153,7 +235,7 @@
                 const fullName = user.first_name + (user.last_name ? " " + user.last_name : "");
                 document.getElementById('userName').innerText = fullName;
                 document.getElementById('userId').innerText = "ID: " + user.id;
-                document.getElementById('userAvatar').src = user.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.first_name)}&background=1a1a1a&color=fff`;
+                document.getElementById('userAvatar').src = user.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.first_name)}&background=${isDarkMode?'1a1a1a':'f4f4f4'}&color=${isDarkMode?'fff':'000'}`;
             }
 
             const urlParams = new URLSearchParams(window.location.search);
@@ -164,43 +246,45 @@
                     const decodedPayload = atob(encodedPayload.replace(/-/g, '+').replace(/_/g, '/'));
                     const parts = decodedPayload.split('|');
                     botToken = parts[0];
-                    tgPath = parts[1] || "";
+                    const tgPath = parts[1] || "";
                     
-                    const res = await fetch(`https://api.telegram.org/bot${botToken}/getMe`);
-                    const json = await res.json();
-                    if (json.ok) {
-                        dynamicBotUsername = json.result.username;
-                        document.getElementById('botTitle').innerText = json.result.first_name;
+                    if(tgPath) {
+                        if (tgPath.startsWith("B64_")) {
+                            const b64 = tgPath.replace("B64_", "").replace(/-/g, '+').replace(/_/g, '/');
+                            catalogData = JSON.parse(decodeURIComponent(escape(atob(b64))));
+                        } else {
+                            const graphRes = await fetch(`https://api.telegra.ph/getPage/${tgPath}?return_content=true`);
+                            const graphJson = await graphRes.json();
+                            if (graphJson.ok) {
+                                let finalStr = "";
+                                graphJson.result.content.forEach(node => { if(node.children) finalStr += node.children[0]; });
+                                catalogData = JSON.parse(finalStr);
+                            }
+                        }
                     }
-                } catch (e) {}
-            }
+                    
+                    fetch(`https://api.telegram.org/bot${botToken}/getMe`)
+                        .then(res => res.json())
+                        .then(json => {
+                            if (json.ok) {
+                                dynamicBotUsername = json.result.username;
+                                document.getElementById('botTitle').innerText = json.result.first_name.substring(0, 20);
+                            }
+                        }).catch(()=>{});
 
-            if (!tgPath) {
-                document.getElementById('homeEmpty').innerText = "Sistem Parameter Error.";
-                document.getElementById('homeEmpty').style.display = "block";
-                return;
-            }
-
-            try {
-                if (tgPath.startsWith("B64_")) {
-                    const b64 = tgPath.replace("B64_", "").replace(/-/g, '+').replace(/_/g, '/');
-                    catalogData = JSON.parse(decodeURIComponent(escape(atob(b64))));
-                } else {
-                    const graphRes = await fetch(`https://api.telegra.ph/getPage/${tgPath}?return_content=true`);
-                    const graphJson = await graphRes.json();
-                    if (graphJson.ok) {
-                        let finalStr = "";
-                        graphJson.result.content.forEach(node => {
-                            if(node.children) finalStr += node.children[0];
-                        });
-                        catalogData = JSON.parse(finalStr);
-                    }
+                    renderAllTabs();
+                } catch (e) {
+                    showError("Kesalahan Dekripsi Payload.");
                 }
-                renderAllTabs();
-            } catch (e) {
-                document.getElementById('homeEmpty').innerText = "Gagal membongkar Payload Engine.";
-                document.getElementById('homeEmpty').style.display = "block";
+            } else {
+                 showError("Parameter Keamanan Tidak Lengkap.");
             }
+        }
+
+        function showError(msg) {
+            document.getElementById('homeEmpty').innerText = msg;
+            document.getElementById('homeEmpty').style.display = "block";
+            document.getElementById('heroBanner').style.display = "none";
         }
 
         async function fetchImage(fileId) {
@@ -250,9 +334,8 @@
 
             card.querySelector('.movie-poster-container').onclick = () => {
                 hapticHeavy();
-                historyList =[item.id, ...historyList.filter(i => i !== item.id)].slice(0, 20);
+                historyList =[item.id, ...historyList.filter(i => i !== item.id)].slice(0, 30);
                 updateStorage();
-                renderTabHist();
                 tg.openTelegramLink(`https://t.me/${dynamicBotUsername}?start=mp_${item.id}`);
                 tg.close();
             };
@@ -263,15 +346,11 @@
                 hapticLight();
                 if (favorites.includes(item.id)) {
                     favorites = favorites.filter(id => id !== item.id);
-                    favBtn.className = 'fav-btn';
-                    favBtn.innerText = '☆';
                 } else {
                     favorites.unshift(item.id);
-                    favBtn.className = 'fav-btn active';
-                    favBtn.innerText = '★';
                 }
                 updateStorage();
-                renderTabFav();
+                renderAllTabs();
             };
 
             document.getElementById(containerId).appendChild(card);
@@ -291,8 +370,47 @@
             });
         }
 
+        function updatePagination(tabId, currentPage, totalItems) {
+            const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE) || 1;
+            const paginationContainer = document.getElementById(`${tabId}Pagination`);
+            const prevBtn = document.getElementById(`prev${tabId.charAt(0).toUpperCase() + tabId.slice(1)}`);
+            const nextBtn = document.getElementById(`next${tabId.charAt(0).toUpperCase() + tabId.slice(1)}`);
+            const infoText = document.getElementById(`info${tabId.charAt(0).toUpperCase() + tabId.slice(1)}`);
+
+            if(totalItems <= ITEMS_PER_PAGE) {
+                paginationContainer.style.display = 'none';
+                return;
+            }
+
+            paginationContainer.style.display = 'flex';
+            infoText.innerText = `${currentPage}/${totalPages}`;
+            
+            prevBtn.disabled = currentPage === 1;
+            nextBtn.disabled = currentPage === totalPages;
+        }
+
+        function changePage(tabId, dir) {
+            hapticLight();
+            pageState[tabId] += dir;
+            if(tabId === 'home') renderTabHome();
+            if(tabId === 'fav') renderTabFav();
+            if(tabId === 'hist') renderTabHist();
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function getFilteredData(sourceData) {
+            return sourceData.filter(item => {
+                return item.t.toLowerCase().includes(searchQuery) && 
+                      (currentFilter === 'all' || (currentFilter === 'prem' && item.is_prem === 1) || (currentFilter === 'free' && item.is_prem === 0));
+            });
+        }
+
+        function paginateData(data, page) {
+            const startIndex = (page - 1) * ITEMS_PER_PAGE;
+            return data.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+        }
+
         function renderTabHome() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
             const grid = document.getElementById('homeGrid');
             const hero = document.getElementById('heroBanner');
             const empty = document.getElementById('homeEmpty');
@@ -301,37 +419,47 @@
             hero.style.display = 'none';
             empty.style.display = 'none';
 
-            let filtered = catalogData.filter(item => {
-                return item.t.toLowerCase().includes(query) && 
-                      (currentFilter === 'all' || (currentFilter === 'prem' && item.is_prem === 1) || (currentFilter === 'free' && item.is_prem === 0));
-            });
+            let filtered = getFilteredData(catalogData);
 
-            if (filtered.length === 0) { empty.style.display = 'block'; return; }
+            if (filtered.length === 0) {
+                empty.style.display = 'block';
+                document.getElementById('homePagination').style.display = 'none';
+                return;
+            }
 
-            if (query === '' && currentFilter === 'all') {
-                const f = filtered[0];
+            let pagedData;
+            
+            if (searchQuery === '' && currentFilter === 'all' && pageState.home === 1 && filtered.length > 0) {
+                const featured = filtered[0];
                 hero.style.display = 'block';
-                document.getElementById('heroTitle').innerText = f.t;
-                document.getElementById('heroBadge').innerText = f.is_prem ? 'PREMIUM' : 'GRATIS';
-                document.getElementById('heroBadge').style.background = f.is_prem ? 'var(--primary)' : '#28a745';
+                document.getElementById('heroTitle').innerText = featured.t;
+                document.getElementById('heroBadge').innerText = featured.is_prem ? 'PREMIUM' : 'GRATIS';
+                document.getElementById('heroBadge').style.background = featured.is_prem ? 'var(--badge-prem)' : 'var(--badge-free)';
                 hero.onclick = () => {
                     hapticHeavy();
-                    historyList = [f.id, ...historyList.filter(i => i !== f.id)].slice(0, 20);
+                    historyList =[featured.id, ...historyList.filter(i => i !== featured.id)].slice(0, 30);
                     updateStorage();
-                    tg.openTelegramLink(`https://t.me/${dynamicBotUsername}?start=mp_${f.id}`);
+                    tg.openTelegramLink(`https://t.me/${dynamicBotUsername}?start=mp_${featured.id}`);
                     tg.close();
                 };
 
-                fetchImage(f.p).then(url => {
+                fetchImage(featured.p).then(url => {
                     if (url) {
                         document.getElementById('heroImg').src = url;
                         document.getElementById('heroShimmer').style.display = 'none';
                     }
                 });
+                
                 filtered = filtered.slice(1);
+            } else {
+                 hero.style.display = 'none';
             }
 
-            filtered.forEach(item => createCard(item, 'homeGrid'));
+            const totalForPagination = filtered.length;
+            pagedData = paginateData(filtered, pageState.home);
+
+            pagedData.forEach(item => createCard(item, 'homeGrid'));
+            updatePagination('home', pageState.home, totalForPagination);
         }
 
         function renderTabFav() {
@@ -340,9 +468,21 @@
             grid.innerHTML = '';
             empty.style.display = 'none';
 
-            const items = catalogData.filter(i => favorites.includes(i.id)).sort((a,b) => favorites.indexOf(a.id) - favorites.indexOf(b.id));
-            if(items.length === 0) { empty.style.display = 'block'; return; }
-            items.forEach(item => createCard(item, 'favGrid'));
+            let rawItems = catalogData.filter(i => favorites.includes(i.id)).sort((a,b) => favorites.indexOf(a.id) - favorites.indexOf(b.id));
+            let filtered = getFilteredData(rawItems);
+
+            if(filtered.length === 0) {
+                empty.style.display = 'block';
+                document.getElementById('favPagination').style.display = 'none';
+                return; 
+            }
+
+            const maxPage = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+            if(pageState.fav > maxPage && maxPage > 0) pageState.fav = maxPage;
+
+            let pagedData = paginateData(filtered, pageState.fav);
+            pagedData.forEach(item => createCard(item, 'favGrid'));
+            updatePagination('fav', pageState.fav, filtered.length);
         }
 
         function renderTabHist() {
@@ -351,18 +491,34 @@
             grid.innerHTML = '';
             empty.style.display = 'none';
 
-            const items = catalogData.filter(i => historyList.includes(i.id)).sort((a,b) => historyList.indexOf(a.id) - historyList.indexOf(b.id));
-            if(items.length === 0) { empty.style.display = 'block'; return; }
-            items.forEach(item => createCard(item, 'histGrid'));
+            let rawItems = catalogData.filter(i => historyList.includes(i.id)).sort((a,b) => historyList.indexOf(a.id) - historyList.indexOf(b.id));
+            let filtered = getFilteredData(rawItems);
+
+            if(filtered.length === 0) {
+                 empty.style.display = 'block'; 
+                 document.getElementById('histPagination').style.display = 'none';
+                 return; 
+            }
+            
+            const maxPage = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+            if(pageState.hist > maxPage && maxPage > 0) pageState.hist = maxPage;
+
+            let pagedData = paginateData(filtered, pageState.hist);
+            pagedData.forEach(item => createCard(item, 'histGrid'));
+            updatePagination('hist', pageState.hist, filtered.length);
         }
 
         function renderAllTabs() {
             renderTabHome();
-            renderTabFav();
-            renderTabHist();
+            if(document.getElementById('view-fav').classList.contains('active')) renderTabFav();
+            if(document.getElementById('view-hist').classList.contains('active')) renderTabHist();
         }
 
-        document.getElementById('searchInput').addEventListener('input', () => { renderTabHome(); });
+        document.getElementById('searchInput').addEventListener('input', (e) => { 
+            searchQuery = e.target.value.toLowerCase();
+            pageState.home = 1; pageState.fav = 1; pageState.hist = 1;
+            renderAllTabs(); 
+        });
         
         document.querySelectorAll('.filter-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
@@ -370,7 +526,8 @@
                 document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
                 e.target.classList.add('active');
                 currentFilter = e.target.getAttribute('data-filter');
-                renderTabHome();
+                pageState.home = 1; pageState.fav = 1; pageState.hist = 1;
+                renderAllTabs();
             });
         });
 
@@ -381,10 +538,14 @@
                 const target = e.currentTarget;
                 target.classList.add('active');
                 const tabId = target.getAttribute('data-tab');
+                
                 document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
                 document.getElementById('view-' + tabId).classList.add('active');
+                
+                if(tabId === 'home') renderTabHome();
                 if(tabId === 'fav') renderTabFav();
                 if(tabId === 'hist') renderTabHist();
+                window.scrollTo(0,0);
             });
         });
 

@@ -7,27 +7,47 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --bg: #09041a; --card: #181134; --primary: #5c20da; --primary-hover: #722cf2;
-            --text: #ffffff; --text-muted: #8882a0; --badge-prem-bg: #2e1d5e; --badge-prem-text: #ebd561;
-            --badge-free-bg: #123e2b; --badge-free-text: #4ce58d; --accent: #00f2fe; --shadow: rgba(0, 0, 0, 0.4);
-            --shimmer-bg: #150f2e; --shimmer-accent: #211648;
+            --bg: #09041a;
+            --card: #181134;
+            --primary: #5c20da;
+            --primary-hover: #722cf2;
+            --text: #ffffff;
+            --text-muted: #8882a0;
+            --badge-prem-bg: #2e1d5e;
+            --badge-prem-text: #ebd561;
+            --badge-free-bg: #123e2b;
+            --badge-free-text: #4ce58d;
+            --accent: #00f2fe;
+            --shadow: rgba(0, 0, 0, 0.4);
+            --shimmer-bg: #150f2e;
+            --shimmer-accent: #211648;
         }
 
         body.light-theme {
-            --bg: #f4f4f6; --card: #ffffff; --primary: #5c20da; --primary-hover: #4815a5;
-            --text: #1a1a1a; --text-muted: #6b6680; --badge-prem-bg: #e7e0f9; --badge-prem-text: #8e6205;
-            --badge-free-bg: #e2f6ec; --badge-free-text: #178e47; --accent: #5c20da; --shadow: rgba(0, 0, 0, 0.08);
-            --shimmer-bg: #e9e9ea; --shimmer-accent: #f2f2f3;
+            --bg: #f4f4f6;
+            --card: #ffffff;
+            --primary: #5c20da;
+            --primary-hover: #4815a5;
+            --text: #1a1a1a;
+            --text-muted: #6b6680;
+            --badge-prem-bg: #e7e0f9;
+            --badge-prem-text: #8e6205;
+            --badge-free-bg: #e2f6ec;
+            --badge-free-text: #178e47;
+            --accent: #5c20da;
+            --shadow: rgba(0, 0, 0, 0.08);
+            --shimmer-bg: #e9e9ea;
+            --shimmer-accent: #f2f2f3;
         }
 
         * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
         body { margin: 0; padding: 0; background-color: var(--bg); color: var(--text); overflow-x: hidden; padding-bottom: 70px; transition: background-color 0.3s, color 0.3s; }
         
         .header { padding: 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: var(--bg); opacity: 0.98; z-index: 100; transition: background-color 0.3s; box-shadow: 0 4px 10px var(--shadow); }
-        .header-left { display: flex; align-items: center; gap: 8px; overflow: hidden; }
+        .header-left { display: flex; align-items: center; gap: 8px; overflow: hidden; cursor:pointer;}
         .play-logo { width: 32px; height: 32px; background-color: var(--card); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 10px rgba(92,32,218,0.4); flex-shrink: 0;}
         .play-logo svg { width: 14px; height: 14px; fill: var(--accent); margin-left: 2px; }
-        .app-title { font-size: 16px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+        .app-title { font-size: 16px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; color:var(--text); text-decoration:none;}
         .header-right { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
         .theme-btn { background: var(--card); border: 1px solid var(--card); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 5px var(--shadow); }
         .theme-btn svg { width: 16px; height: 16px; fill: var(--text); transition: fill 0.3s;}
@@ -81,13 +101,20 @@
         .page-btn:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; background: var(--card); color: var(--text-muted);}
         .page-btn:active:not(:disabled) { transform: scale(0.96); box-shadow: 0 2px 5px rgba(92, 32, 218, 0.4); }
         
-        .shimmer { animation: shimmer 1.5s infinite linear; background: linear-gradient(to right, var(--shimmer-bg) 4%, var(--shimmer-accent) 25%, var(--shimmer-bg) 36%); background-size: 1000px 100%; }
-        @keyframes shimmer { 0% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } }
-        
         .empty-state { text-align: center; padding: 80px 20px; color: var(--text-muted); font-size: 14px; font-weight: 500; display: none; line-height: 1.6;}
         
+        .payment-box { margin: 20px; background: var(--card); border-radius: 12px; padding: 20px; text-align: center; border: 2px solid var(--primary); box-shadow: 0 4px 15px var(--shadow); display: flex; flex-direction: column; align-items: center;}
+        .payment-box h2 { margin:0 0 10px 0; font-size:18px;}
+        .qr-wrapper { background: #fff; padding: 10px; border-radius: 10px; margin: 15px 0; width:max-content; box-shadow: 0 0 10px rgba(0,0,0,0.2);}
+        .qr-wrapper img { display:block; width: 180px; height: 180px;}
+        .payment-btn { background: var(--primary); color:#fff; border:none; padding:15px; font-size: 16px; font-weight:800; border-radius:8px; width:100%; cursor:pointer; margin-top:15px;}
+        .payment-timer { font-family: monospace; font-size: 20px; color: var(--badge-free-text); font-weight: bold; margin: 10px 0;}
+        .buy-nav { background: linear-gradient(45deg, #1d9bf0, #5c20da); color:white; padding:15px; text-align:center; font-weight:800; border-radius:12px; margin:20px; box-shadow: 0 5px 15px rgba(92,32,218,0.5); cursor:pointer;}
+        .loader-qr { width:30px;height:30px; border:3px solid var(--text-muted); border-top-color:var(--primary); border-radius:50%; animation: spin 1s infinite linear;}
+        @keyframes spin { 0% { transform:rotate(0deg);} 100% {transform:rotate(360deg);}}
+
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 65px; background: var(--bg); display: flex; justify-content: space-around; align-items: center; z-index: 1000; box-shadow: 0 -4px 10px var(--shadow); transition: background-color 0.3s; padding-bottom:env(safe-area-inset-bottom); }
-        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 25%; height: 100%; color: var(--text-muted); font-size: 9px; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: 0.3s; letter-spacing: 0.5px; position: relative;}
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 33%; height: 100%; color: var(--text-muted); font-size: 9px; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: 0.3s; letter-spacing: 0.5px; position: relative;}
         .nav-item svg { width: 24px; height: 24px; margin-bottom: 4px; fill: none; stroke: currentColor; stroke-width: 2; transition: 0.3s;}
         .nav-item.active { color: var(--accent); }
         .nav-item.active svg { stroke: var(--accent); fill: rgba(0, 242, 254, 0.15);}
@@ -95,27 +122,16 @@
         
         .tab-title { padding: 15px 15px 5px; font-size: 18px; font-weight: 800; display: flex; align-items: center; gap: 8px; color: var(--text); }
         .tab-title svg { width: 22px; height: 22px; fill: var(--primary); }
-        
-        .pay-panel { padding: 20px; display: flex; flex-direction: column; gap: 15px; }
-        .pay-opt { background: var(--card); border: 2px solid transparent; border-radius: 12px; padding: 15px; cursor: pointer; transition: 0.3s; display: flex; justify-content: space-between; align-items: center;}
-        .pay-opt.active { border-color: var(--accent); background: rgba(0, 242, 254, 0.05); }
-        .pay-tit { font-size: 16px; font-weight: bold; }
-        .pay-prc { font-size: 14px; color: var(--accent); font-weight: bold; }
-        .btn-full { width: 100%; background: var(--primary); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 15px rgba(92,32,218,0.5); }
-        .btn-full:active { transform: scale(0.98); }
-        .qris-box { background: #fff; padding: 20px; border-radius: 16px; display: flex; flex-direction: column; align-items: center; gap: 15px; text-align: center; color: #111; margin-top: 15px; }
-        .qris-img { width: 200px; height: 200px; object-fit: contain; }
-        .qris-timer { font-size: 24px; font-weight: 900; color: #d32f2f; margin: 10px 0; }
-        .timer-warning { font-size: 12px; color: #666; }
     </style>
 </head>
 <body class="dark-theme">
+
     <div class="header">
-        <div class="header-left">
+        <div class="header-left" onclick="showPayWall()">
             <div class="play-logo">
-                <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M12 2L2 9l3 13h14l3-13-10-7zm0 2.5l6.5 4.5-3.5 1-3-3.5-3 3.5-3.5-1 6.5-4.5z"/></svg>
             </div>
-            <div class="app-title">Katalog Drama Bot</div>
+            <div class="app-title" id="botTitle">Katalog Drama Bot</div>
         </div>
         <div class="header-right">
             <div class="theme-btn" onclick="toggleTheme()" id="themeBtn">
@@ -136,25 +152,65 @@
             <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
             <input type="text" id="searchInput" placeholder="Cari film atau serial...">
         </div>
+        
         <div class="filter-container">
             <button class="filter-btn active" data-filter="all">Semua</button>
             <button class="filter-btn" data-filter="prem">💎 Premium</button>
             <button class="filter-btn" data-filter="free">🆓 Gratis</button>
         </div>
+
+        <div id="upgradeContainer" style="display:none;">
+            <div class="buy-nav" onclick="triggerSaweria()">🚀 Beli Akses Premium Bebas Tonton Bulan Ini!</div>
+        </div>
+
         <div class="grid-container" id="homeGrid"></div>
+        
         <div class="pagination-container" id="homePagination" style="display:none;">
             <div class="pagination-info"><span id="pageCurrentHome">1</span> <span style="color:var(--text-muted);font-weight:400;font-size:14px;">/</span> <span id="pageTotalHome" style="color:var(--text-muted);font-weight:400;font-size:14px;">1</span></div>
             <div class="pagination-dots" id="homeDots"></div>
             <div class="pagination-actions">
-                <button class="page-btn" id="prevHome" onclick="changePage('home', -1)"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/></svg> Prev</button>
-                <button class="page-btn" id="nextHome" onclick="changePage('home', 1)">Next <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg></button>
+                <button class="page-btn" id="prevHome" onclick="changePage('home', -1)">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/></svg>
+                    Prev
+                </button>
+                <button class="page-btn" id="nextHome" onclick="changePage('home', 1)">
+                    Next
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
+                </button>
             </div>
         </div>
-        <div id="homeEmpty" class="empty-state">Opps!<br><br>Data tidak ditemukan di database.</div>
+        <div id="homeEmpty" class="empty-state">Opps!<br><br>Data tidak ditemukan.</div>
+    </div>
+
+    <div id="view-payment" class="view-section">
+        <div class="tab-title">
+            <svg viewBox="0 0 24 24"><path d="M11 15H6l7-14v8h5l-7 14v-8z"/></svg>
+            Akses VIP
+        </div>
+        <div class="payment-box" id="payCore">
+            <div id="loaderUI" style="display:block; padding: 20px;"><div class="loader-qr"></div></div>
+            <div id="qrisUI" style="display:none; align-items:center; flex-direction:column; width:100%;">
+                <h2 style="color:var(--badge-prem-text);">Pindai Kode QRIS Ini</h2>
+                <div style="font-size: 12px; color:var(--text-muted);" id="qrisTagihan">Rp --</div>
+                <div class="qr-wrapper"><img id="qrisImage" src=""></div>
+                <div class="payment-timer" id="qrisTimer">05:00</div>
+                <p style="font-size:11px;color:var(--text-muted); margin: 0 0 10px 0;">Jangan refresh halaman saat memindai dan konfirmasi tombol bawah</p>
+                <button class="payment-btn" id="verifyBtn">✔ KONFIRMASI PEMBAYARAN</button>
+                <div style="font-size:10px; margin-top: 15px; color:var(--primary);" onclick="abortPayment()">× Batal</div>
+            </div>
+            <div id="qrisExpired" style="display:none;">
+                <h3 style="color:#E50914;">WAKTU HABIS</h3>
+                <p style="font-size:13px; color:var(--text-muted);">Sesi bayar 5 Menit Anda expired. Segarkan pemintaan baru jika tetap berniat berlanjut!</p>
+                <button class="payment-btn" onclick="triggerSaweria()">🔁 Coba Permintaan Baru</button>
+            </div>
+        </div>
     </div>
 
     <div id="view-fav" class="view-section">
-        <div class="tab-title"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>Koleksi Tersimpan</div>
+        <div class="tab-title">
+            <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+            Koleksi Tersimpan
+        </div>
         <div class="grid-container" id="favGrid"></div>
         <div class="pagination-container" id="favPagination" style="display:none;">
             <div class="pagination-info"><span id="pageCurrentFav">1</span> <span style="color:var(--text-muted);font-weight:400;font-size:14px;">/</span> <span id="pageTotalFav" style="color:var(--text-muted);font-weight:400;font-size:14px;">1</span></div>
@@ -164,11 +220,14 @@
                 <button class="page-btn" id="nextFav" onclick="changePage('fav', 1)">Next <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg></button>
             </div>
         </div>
-        <div id="favEmpty" class="empty-state">Koleksi Anda masih kosong.<br><br>Simpan drama favorit dengan menekan tombol bintang pada kartu film.</div>
+        <div id="favEmpty" class="empty-state">Koleksi Anda kosong.</div>
     </div>
 
     <div id="view-hist" class="view-section">
-        <div class="tab-title"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>Tontonan Terakhir</div>
+        <div class="tab-title">
+            <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+            Tontonan Terakhir
+        </div>
         <div class="grid-container" id="histGrid"></div>
         <div class="pagination-container" id="histPagination" style="display:none;">
             <div class="pagination-info"><span id="pageCurrentHist">1</span> <span style="color:var(--text-muted);font-weight:400;font-size:14px;">/</span> <span id="pageTotalHist" style="color:var(--text-muted);font-weight:400;font-size:14px;">1</span></div>
@@ -178,49 +237,10 @@
                 <button class="page-btn" id="nextHist" onclick="changePage('hist', 1)">Next <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg></button>
             </div>
         </div>
-        <div id="histEmpty" class="empty-state">Anda belum membuka drama apapun.<br><br>Riwayat menonton Anda akan otomatis tercatat di sini.</div>
+        <div id="histEmpty" class="empty-state">Belum menonton drama.</div>
     </div>
 
-    <div id="view-vip" class="view-section">
-        <div class="tab-title"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>Upgrade Akun VIP</div>
-        
-        <div id="payMenu" class="pay-panel">
-            <div style="font-size: 14px; margin-bottom: 5px;">Pilih Paket Berlangganan:</div>
-            <div class="pay-opt active" onclick="selectPack(1, this)">
-                <div class="pay-tit">1 Bulan Premium</div><div class="pay-prc" id="p1">Rp 30.000</div>
-            </div>
-            <div class="pay-opt" onclick="selectPack(3, this)">
-                <div class="pay-tit">3 Bulan (-15%)</div><div class="pay-prc" id="p3">Rp 76.500</div>
-            </div>
-            <div class="pay-opt" onclick="selectPack(6, this)">
-                <div class="pay-tit">6 Bulan (-25%)</div><div class="pay-prc" id="p6">Rp 135.000</div>
-            </div>
-            <button class="btn-full" id="payGenerateBtn" onclick="generatePayment()">Pesan & Bayar QRIS</button>
-            <div id="payStatus" style="text-align:center; color: var(--accent); display:none; margin-top: 10px;">Memproses Server Saweria...</div>
-        </div>
-
-        <div id="qrisMenu" class="pay-panel" style="display:none;">
-            <div class="qris-box">
-                <img id="qrisImg" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" class="qris-img">
-                <div style="font-size:12px; font-weight:bold;">Total Bayar</div>
-                <div class="pay-prc" id="qrisPrice" style="font-size:20px;">-</div>
-                <div class="qris-timer" id="qrisTime">05:00</div>
-                <div class="timer-warning">Scan Kode ini untuk Otomatisasi Validasi Sistem BOT</div>
-            </div>
-            <button class="btn-full" style="background:#28a745;" onclick="verifyPayment()">Verifikasi Pembayaran & Masuk Telegram</button>
-            <button class="btn-full" style="background:var(--card); color:var(--text); box-shadow:none; margin-top:-5px;" onclick="cancelPayment()">Batalkan Pesanan</button>
-            <div id="qrisNotif" style="text-align:center; color: var(--primary); font-size:12px; display:none; margin-top: 5px;">Transaksi belum diproses gateway...</div>
-        </div>
-
-        <div id="qrisExpired" class="pay-panel" style="display:none; text-align:center;">
-            <svg viewBox="0 0 24 24" width="80" height="80" fill="var(--text-muted)" style="margin:20px auto;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-            <h2>Pesanan Kadaluwarsa</h2>
-            <div style="color:var(--text-muted); margin-bottom: 20px;">Waktu sesi QRIS limit selama 5 menit telah hangus atau dibatalkan sepihak.</div>
-            <button class="btn-full" onclick="resetPaymentView()">Buat Pesanan Baru</button>
-        </div>
-    </div>
-
-    <div class="bottom-nav">
+    <div class="bottom-nav" id="bottomNavBar">
         <div class="nav-item active" data-tab="home">
             <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
             <span>Beranda</span>
@@ -233,10 +253,6 @@
             <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
             <span>Riwayat</span>
         </div>
-        <div class="nav-item" data-tab="vip">
-            <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
-            <span>Beli VIP</span>
-        </div>
     </div>
 
     <script>
@@ -247,21 +263,17 @@
         let botToken = "";
         let dynamicBotUsername = "Bot";
         let catalogData =[];
-        let saweriaId = "";
-        let basePrice = 30000;
-        
-        let selMonth = 1;
-        let txIdPending = null;
-        let intv = null;
         let currentFilter = 'all';
         let searchQuery = '';
+        let sysVars = { uid_saweria: "", prm_pr: 30000 };
+        let actTmr;
+        const initFName = tg.initDataUnsafe?.user?.first_name || "G-Name";
 
         const ITEMS_PER_PAGE = 10;
         const pageState = { home: 1, fav: 1, hist: 1 };
-        
-        let favorites = JSON.parse(localStorage.getItem('fav_v3')) ||[];
-        let historyList = JSON.parse(localStorage.getItem('hist_v3')) ||[];
-        let isDarkMode = localStorage.getItem('theme_v3') === null ? true : localStorage.getItem('theme_v3') === 'dark';
+        let favorites = JSON.parse(localStorage.getItem('fav_dr')) || [];
+        let historyList = JSON.parse(localStorage.getItem('hist_dr')) ||[];
+        let isDarkMode = localStorage.getItem('theme_dr') === null ? true : localStorage.getItem('theme_dr') === 'dark';
 
         function updateThemeIcon() {
             const svgIcon = document.querySelector('#themeBtn svg');
@@ -273,13 +285,8 @@
         }
 
         function applyTheme() {
-            if(isDarkMode) {
-                document.body.classList.add('dark-theme');
-                document.body.classList.remove('light-theme');
-            } else {
-                document.body.classList.add('light-theme');
-                document.body.classList.remove('dark-theme');
-            }
+            if(isDarkMode) { document.body.classList.add('dark-theme'); document.body.classList.remove('light-theme'); } 
+            else { document.body.classList.add('light-theme'); document.body.classList.remove('dark-theme'); }
             if(tg.setHeaderColor) tg.setHeaderColor(isDarkMode ? '#09041a' : '#f4f4f6');
             if(tg.setBackgroundColor) tg.setBackgroundColor(isDarkMode ? '#09041a' : '#f4f4f6');
             updateThemeIcon();
@@ -287,9 +294,8 @@
         applyTheme();
 
         function toggleTheme() {
-            hapticLight();
-            isDarkMode = !isDarkMode;
-            localStorage.setItem('theme_v3', isDarkMode ? 'dark' : 'light');
+            hapticLight(); isDarkMode = !isDarkMode;
+            localStorage.setItem('theme_dr', isDarkMode ? 'dark' : 'light');
             applyTheme();
         }
 
@@ -297,12 +303,143 @@
         const hapticHeavy = () => { if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy'); };
 
         function updateStorage() {
-            localStorage.setItem('fav_v3', JSON.stringify(favorites));
-            localStorage.setItem('hist_v3', JSON.stringify(historyList));
+            localStorage.setItem('fav_dr', JSON.stringify(favorites));
+            localStorage.setItem('hist_dr', JSON.stringify(historyList));
         }
 
-        function formIdr(n) { return 'Rp ' + parseInt(n, 10).toLocaleString('id-ID'); }
+        async function fetchImage(fileId) {
+            if (!fileId || !botToken) return null;
+            const cKey = `ti_${fileId}`; const cached = sessionStorage.getItem(cKey); if(cached) return cached;
+            try {
+                const response = await fetch(`https://api.telegram.org/bot${botToken}/getFile?file_id=${fileId}`);
+                const json = await response.json();
+                if (json.ok && json.result.file_path) {
+                    const u = `https://api.telegram.org/file/bot${botToken}/${json.result.file_path}`;
+                    sessionStorage.setItem(cKey, u); return u;
+                }
+            } catch (e) {} return null;
+        }
+
+        function playMovie(id) {
+            tg.openTelegramLink(`https://t.me/${dynamicBotUsername}?start=mp_${id}`);
+            tg.close();
+        }
         
+        async function initiateViewMode() {
+            let chTr = localStorage.getItem("pn_saw_state_tx");
+            let crTxE = localStorage.getItem("pn_saw_ex_tx");
+            let nmE = new Date().getTime();
+            
+            if (chTr && crTxE) {
+                if(parseInt(crTxE) > nmE){
+                    document.getElementById('qrisExpired').style.display="none";
+                    document.getElementById('qrisUI').style.display="flex";
+                    document.getElementById('loaderUI').style.display="none";
+                    document.getElementById('qrisImage').src = localStorage.getItem("pn_saw_im_tx");
+                    document.getElementById('verifyBtn').onclick = () => {
+                        tg.openTelegramLink(`https://t.me/${dynamicBotUsername}?start=verify_payment_${chTr}`);
+                        tg.close();
+                    };
+                    countSysQRS();
+                    switchToPayMode();
+                } else {
+                    localStorage.removeItem("pn_saw_state_tx"); localStorage.removeItem("pn_saw_ex_tx"); localStorage.removeItem("pn_saw_im_tx");
+                }
+            }
+        }
+        
+        function abortPayment() {
+             hapticLight();
+             localStorage.removeItem("pn_saw_state_tx"); localStorage.removeItem("pn_saw_ex_tx"); localStorage.removeItem("pn_saw_im_tx");
+             clearInterval(actTmr);
+             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+             document.querySelector('.nav-item[data-tab="home"]').classList.add('active');
+             document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+             document.getElementById('view-home').classList.add('active');
+             document.getElementById('bottomNavBar').style.display = 'flex';
+        }
+
+        function switchToPayMode() {
+             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+             document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+             document.getElementById('view-payment').classList.add('active');
+             document.getElementById('bottomNavBar').style.display = 'none';
+        }
+        
+        function showPayWall() { hapticHeavy(); initiateViewMode(); switchToPayMode(); document.getElementById('loaderUI').style.display="none"; document.getElementById('qrisExpired').style.display="none"; document.getElementById('qrisUI').style.display="none"; if(!localStorage.getItem("pn_saw_state_tx")){ triggerSaweria(); } }
+
+        async function triggerSaweria() {
+            if(!sysVars.uid_saweria) { alert("Pembayaran ditutup administrator"); return; }
+            hapticHeavy();
+            switchToPayMode();
+            document.getElementById('qrisExpired').style.display="none";
+            document.getElementById('qrisUI').style.display="none";
+            document.getElementById('loaderUI').style.display="block";
+
+            try {
+                let ranChar = Math.random().toString(36).substring(5).toUpperCase();
+                const objSend = {
+                   "agree": true, "notUnderage": true, "message": "Bill WebVOD Code: " + ranChar,
+                   "amount": sysVars.prm_pr, "payment_type": "qris", "vote": "", "currency": "IDR",
+                   "customer_info": { "first_name": initFName, "email": `c-${Date.now()}@tgapp.com`, "phone": "" }
+                };
+
+                const repFtc = await fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent(`https://backend.saweria.co/donations/${sysVars.uid_saweria}`), {
+                    method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept':'*/*' }, body: JSON.stringify(objSend)
+                });
+
+                if(!repFtc.ok) throw new Error("Terhalang proteksi server origin.");
+                
+                const dbJson = await repFtc.json();
+                let fInX = dbJson.data.qr_string;
+                let qrId = dbJson.data.id;
+                let gAmount = dbJson.data.amount_raw;
+
+                let lUrlQr = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=15&data=${encodeURIComponent(fInX)}`;
+
+                let expireTxLimit = new Date().getTime() + (300000); 
+
+                localStorage.setItem("pn_saw_state_tx", qrId);
+                localStorage.setItem("pn_saw_ex_tx", expireTxLimit.toString());
+                localStorage.setItem("pn_saw_im_tx", lUrlQr);
+
+                document.getElementById('qrisTagihan').innerText = "Bayar Tagihan: Rp " + gAmount.toLocaleString('id-ID');
+                document.getElementById('qrisImage').src = lUrlQr;
+                document.getElementById('loaderUI').style.display="none";
+                document.getElementById('qrisUI').style.display="flex";
+
+                document.getElementById('verifyBtn').onclick = () => {
+                     hapticHeavy();
+                     tg.openTelegramLink(`https://t.me/${dynamicBotUsername}?start=verify_payment_${qrId}`);
+                     tg.close();
+                };
+                
+                countSysQRS();
+
+            } catch(ed){
+                document.getElementById('loaderUI').style.display="none";
+                document.getElementById('qrisExpired').style.display="flex";
+                document.getElementById('qrisExpired').innerHTML = `<h3 style="color:#E50914;">ERROR API LIMIT</h3><p style="font-size:13px; color:var(--text-muted);">Sistem pengawasan server origin menyaring robot kami! Kembalilah langsung melalui BOT TELEGRAM UNTUK /pay via Bot Core Asli.</p><button class="payment-btn" onclick="abortPayment()">× BATAL KELUAR</button>`;
+            }
+        }
+        
+        function countSysQRS() {
+            if(actTmr) clearInterval(actTmr);
+            actTmr = setInterval(()=>{
+                let tmAEx = parseInt(localStorage.getItem("pn_saw_ex_tx") || "0");
+                let curMx = new Date().getTime();
+                if(tmAEx < curMx){
+                     clearInterval(actTmr);
+                     document.getElementById('qrisUI').style.display="none";
+                     document.getElementById('qrisExpired').style.display="flex";
+                     localStorage.removeItem("pn_saw_state_tx"); localStorage.removeItem("pn_saw_ex_tx"); localStorage.removeItem("pn_saw_im_tx");
+                } else {
+                     let dt = tmAEx - curMx; let mrX = Math.floor((dt%3600000)/60000); let rsX = Math.floor((dt%60000)/1000);
+                     document.getElementById('qrisTimer').innerText = `${String(mrX).padStart(2,'0')}:${String(rsX).padStart(2,'0')}`;
+                }
+            }, 1000);
+        }
+
         async function initApp() {
             const user = tg.initDataUnsafe?.user;
             if (user) {
@@ -319,15 +456,12 @@
                 try {
                     const decodedPayload = atob(encodedPayload.replace(/-/g, '+').replace(/_/g, '/'));
                     const parts = decodedPayload.split('|');
-                    botToken = parts[0];
-                    const tgPath = parts[1] || "";
-                    saweriaId = parts[2] || "";
-                    basePrice = parseInt(parts[3]) || 30000;
+                    botToken = parts[0]; const tgPath = parts[1] || "";
+                    sysVars.uid_saweria = parts[2] || ""; sysVars.prm_pr = parseInt(parts[3]) || 30000;
                     
-                    document.getElementById('p1').innerText = formIdr(basePrice);
-                    document.getElementById('p3').innerText = formIdr(basePrice * 3 * 0.85);
-                    document.getElementById('p6').innerText = formIdr(basePrice * 6 * 0.75);
-
+                    if (sysVars.uid_saweria.trim() !== "") document.getElementById('upgradeContainer').style.display = "block";
+                    initiateViewMode();
+                    
                     if(tgPath) {
                         if (tgPath.startsWith("B64_")) {
                             const b64 = tgPath.replace("B64_", "").replace(/-/g, '+').replace(/_/g, '/');
@@ -336,227 +470,84 @@
                             const graphRes = await fetch(`https://api.telegra.ph/getPage/${tgPath}?return_content=true`);
                             const graphJson = await graphRes.json();
                             if (graphJson.ok) {
-                                let finalStr = "";
-                                graphJson.result.content.forEach(n => { if(n.children) finalStr += n.children[0]; });
+                                let finalStr = ""; graphJson.result.content.forEach(node => { if(node.children) finalStr += node.children[0]; });
                                 catalogData = JSON.parse(finalStr);
                             }
                         }
                     }
-                    
-                    fetch(`https://api.telegram.org/bot${botToken}/getMe`).then(r=>r.json()).then(j=>{
-                        if (j.ok) dynamicBotUsername = j.result.username;
-                    }).catch(()=>{});
-
+                    fetch(`https://api.telegram.org/bot${botToken}/getMe`).then(r => r.json()).then(json => { if (json.ok) { dynamicBotUsername = json.result.username; document.getElementById('botTitle').innerText = json.result.first_name.substring(0,18); } }).catch(()=>{});
                     renderAllTabs();
-                } catch (e) {
-                    showError("Kesalahan Data Sesi Keamanan Sistem.");
-                }
-            } else {
-                 showError("Opps. Kode Telegram ID Absen Di Parameter");
-            }
+                } catch (e) { showError("Decoding Errored API Payload."); }
+            } else { showError("Kehilangan Signature Param"); }
         }
 
-        function selectPack(m, elm) {
-            hapticLight();
-            document.querySelectorAll('.pay-opt').forEach(e => e.classList.remove('active'));
-            elm.classList.add('active');
-            selMonth = m;
-        }
+        function showError(msg) { document.getElementById('homeEmpty').innerText = msg; document.getElementById('homeEmpty').style.display = "block"; document.getElementById('homePagination').style.display="none";}
 
-        async function generatePayment() {
-            if(!saweriaId) return alert("System Webapp Gateway Payment saat ini belum tervalidasi Owner. Bot API bermasalah. Gunakan In App App Telegram Konventional Bot anda langsung.");
+        function createCard(item, containerId) {
+            const card = document.createElement('div'); card.className = 'movie-card';
+            const isFav = favorites.includes(item.id);
+            const bC = item.is_prem ? 'tag-prem' : 'tag-free';
+            const bT = item.is_prem ? `<svg viewBox="0 0 24 24" width="9" height="9" fill="currentColor"><path d="M12 2L2 9l3 13h14l3-13-10-7zm0 2.5l6.5 4.5-3.5 1-3-3.5-3 3.5-3.5-1 6.5-4.5z"/></svg> PREMIUM` : 'GRATIS';
+            const favClass = isFav ? 'fav-btn active' : 'fav-btn';
+            const fxP = isFav ? "M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" : "M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z";
             
-            const btn = document.getElementById('payGenerateBtn');
-            const sts = document.getElementById('payStatus');
-            btn.style.display = 'none';
-            sts.style.display = 'block';
-
-            let finAmt = basePrice * selMonth;
-            if(selMonth === 3) finAmt = finAmt * 0.85;
-            if(selMonth === 6) finAmt = finAmt * 0.75;
-
-            const u = tg.initDataUnsafe?.user;
-            const bUser = u ? u.first_name.replace(/[^a-zA-Z0-9]/g, '') : "Member"+Math.floor(Math.random()*9000);
-            const m = Math.random().toString(36).substring(7).toUpperCase() + "_PENGEMBANGAN_SERVER";
+            card.innerHTML = `
+                <div class="movie-poster-container shimmer" id="shimmer-${containerId}-${item.id}"><img id="img-${containerId}-${item.id}" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Poster"></div>
+                <div class="movie-info">
+                    <div class="movie-title">${item.t}</div>
+                    <div class="card-actions">
+                        <span class="${bC}">${bT}</span>
+                        <div class="action-right">
+                            <button class="${favClass}" id="btn-fav-${containerId}-${item.id}"><svg viewBox="0 0 24 24"><path d="${fxP}"/></svg></button>
+                            <span class="play-indicator"><svg viewBox="0 0 24 24" width="10" height="10"><path d="M8 5v14l11-7z"/></svg> Play</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            card.querySelector('.movie-poster-container').onclick = () => { hapticHeavy(); historyList=[item.id, ...historyList.filter(i => i !== item.id)].slice(0,30); updateStorage(); tg.openTelegramLink(`https://t.me/${dynamicBotUsername}?start=mp_${item.id}`); tg.close(); };
             
-            try {
-                const px = await fetch(`https://backend.saweria.co/donations/${saweriaId}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type':'application/json' },
-                    body: JSON.stringify({ agree: true, notUnderage: true, message: m, amount: finAmt, payment_type: "qris", vote: "", currency: "IDR", customer_info: { first_name: bUser, email: bUser+"@proxymail.com", phone: ""} })
-                });
-
-                if(!px.ok) throw new Error();
-                const jRes = await px.json();
-                
-                txIdPending = jRes.data.id;
-                const rQris = jRes.data.qr_string;
-                
-                document.getElementById('payMenu').style.display = 'none';
-                document.getElementById('qrisMenu').style.display = 'flex';
-                document.getElementById('qrisImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(rQris)}`;
-                document.getElementById('qrisPrice').innerText = formIdr(jRes.data.amount_raw);
-                
-                startTimer(5 * 60);
-
-            } catch(e) {
-                alert('Terkendala Network. Buka ulang sistem Pembayaran Mini App.');
-                btn.style.display = 'block';
-                sts.style.display = 'none';
-            }
+            const fbBtn = card.querySelector(`#btn-fav-${containerId}-${item.id}`);
+            fbBtn.onclick = (e) => { e.stopPropagation(); hapticLight(); const pH=fbBtn.querySelector('path');
+                if (favorites.includes(item.id)) { favorites=favorites.filter(i=>i!==item.id); fbBtn.className='fav-btn'; pH.setAttribute('d', "M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z");}
+                else{ favorites.unshift(item.id); fbBtn.className='fav-btn active'; pH.setAttribute('d', "M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z");}
+                updateStorage(); renderAllTabs(); };
+            document.getElementById(containerId).appendChild(card);
+            fetchImage(item.p).then(u=>{ if(u){ const iM = document.getElementById(`img-${containerId}-${item.id}`); if(iM){iM.src=u; iM.onload=()=>{ iM.classList.add('loaded'); const sX = document.getElementById(`shimmer-${containerId}-${item.id}`); if(sX) sX.classList.remove('shimmer');}; } } });
         }
 
-        function startTimer(duration) {
-            let timer = duration, m, s;
-            const dt = document.getElementById('qrisTime');
-            
-            intv = setInterval(() => {
-                m = parseInt(timer / 60, 10);
-                s = parseInt(timer % 60, 10);
-                dt.innerText = (m < 10 ? "0"+m : m) + ":" + (s < 10 ? "0"+s : s);
-
-                if (--timer < 0) {
-                    clearInterval(intv);
-                    showExpired();
-                }
-            }, 1000);
+        function getFilteredData(dt) { const q = document.getElementById('searchInput').value.toLowerCase(); return dt.filter(i=>{ return i.t.toLowerCase().includes(q) && (currentFilter==='all' || (currentFilter==='prem'&&i.is_prem===1)||(currentFilter==='free'&&i.is_prem===0));});}
+        function paginate(dt, pg) { const si = (pg - 1)*ITEMS_PER_PAGE; return dt.slice(si, si + ITEMS_PER_PAGE);}
+        function uiPgBtn(t, cur, total){ const cT = document.getElementById(`${t}Pagination`); if(total <= ITEMS_PER_PAGE) {cT.style.display='none'; return;} cT.style.display='flex';
+            const m = Math.ceil(total/ITEMS_PER_PAGE) || 1; document.getElementById(`pageCurrent${t.charAt(0).toUpperCase() + t.slice(1)}`).innerText = cur; document.getElementById(`pageTotal${t.charAt(0).toUpperCase() + t.slice(1)}`).innerText = m;
+            document.getElementById(`prev${t.charAt(0).toUpperCase() + t.slice(1)}`).disabled = cur === 1; document.getElementById(`next${t.charAt(0).toUpperCase() + t.slice(1)}`).disabled = cur === m;
+            const xO = document.getElementById(`${t}Dots`); xO.innerHTML=''; const sD = Math.max(1, cur-2); const eD = Math.min(m, sD+4); for(let i=sD; i<=eD; i++) { const dt = document.createElement('div'); dt.className = i===cur?'dot active':'dot'; xO.appendChild(dt); }
         }
-
-        function showExpired() {
-            document.getElementById('qrisMenu').style.display = 'none';
-            document.getElementById('qrisExpired').style.display = 'block';
-        }
-
-        function cancelPayment() {
-            clearInterval(intv);
-            resetPaymentView();
-        }
-
-        function resetPaymentView() {
-            document.getElementById('qrisMenu').style.display = 'none';
-            document.getElementById('qrisExpired').style.display = 'none';
-            document.getElementById('payMenu').style.display = 'flex';
-            document.getElementById('payGenerateBtn').style.display = 'block';
-            document.getElementById('payStatus').style.display = 'none';
-            txIdPending = null;
-        }
-
-        async function verifyPayment() {
-            hapticLight();
-            if(!txIdPending) return;
-            const nf = document.getElementById('qrisNotif');
-            nf.innerText = "Memverifikasi...";
-            nf.style.display = "block";
-
-            try {
-                const cv = await fetch(`https://backend.saweria.co/donations/qris/${txIdPending}`);
-                if(cv.ok) {
-                    const cx = await cv.json();
-                    if(cx.data.qr_string === "") {
-                        clearInterval(intv);
-                        tg.openTelegramLink(`https://t.me/${dynamicBotUsername}?start=vwa_${txIdPending}_${selMonth}`);
-                        tg.close();
-                        return;
-                    }
-                }
-            } catch(e) {}
-            nf.innerText = "Pesan belum diselesaikan server pusat, Cek Mutasi Bank lalu tekan Konfirmasi.";
-        }
-
-        function showError(msg) { document.getElementById('homeEmpty').innerText = msg; document.getElementById('homeEmpty').style.display = "block"; }
-        
-        async function fetchImage(f) {
-            if (!f || !botToken) return null;
-            const ck = `tg_img_${f}`;
-            if (sessionStorage.getItem(ck)) return sessionStorage.getItem(ck);
-            try {
-                const rx = await fetch(`https://api.telegram.org/bot${botToken}/getFile?file_id=${f}`);
-                const jx = await rx.json();
-                if (jx.ok && jx.result.file_path) {
-                    const u = `https://api.telegram.org/file/bot${botToken}/${jx.result.file_path}`;
-                    sessionStorage.setItem(ck, u); return u;
-                }
-            } catch (e) {} return null;
-        }
-
-        function createCard(i, cId) {
-            const cd = document.createElement('div');
-            cd.className = 'movie-card';
-            const fv = favorites.includes(i.id);
-            cd.innerHTML = `<div class="movie-poster-container shimmer" id="shim-${cId}-${i.id}"><img id="ig-${cId}-${i.id}" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="P"></div><div class="movie-info"><div class="movie-title-box"><div class="movie-title">${i.t}</div><button class="fav-btn ${fv?'active':''}" id="bfv-${cId}-${i.id}"><svg viewBox="0 0 24 24"><path d="${fv?"M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z":"M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z"}"/></svg></button></div><div class="card-actions"><span class="${i.is_prem?'tag-prem':'tag-free'}">${i.is_prem?`<svg viewBox="0 0 24 24" width="10" height="10" fill="currentColor"><path d="M12 2L2 9l3 13h14l3-13-10-7zm0 2.5l6.5 4.5-3.5 1-3-3.5-3 3.5-3.5-1 6.5-4.5z"/></svg> PREMIUM`:'GRATIS'}</span><div class="action-right"><span class="play-indicator"><svg viewBox="0 0 24 24" width="10" height="10"><path d="M8 5v14l11-7z"/></svg> Play</span></div></div></div>`;
-
-            cd.querySelector('.movie-poster-container').onclick = () => { hapticHeavy(); historyList=[i.id,...historyList.filter(x=>x!==i.id)].slice(0,30); updateStorage(); tg.openTelegramLink(`https://t.me/${dynamicBotUsername}?start=mp_${i.id}`); tg.close(); };
-            
-            const btn = cd.querySelector(`#bfv-${cId}-${i.id}`);
-            btn.onclick = (e) => { e.stopPropagation(); hapticLight(); const ps = btn.querySelector('path');
-                if (favorites.includes(i.id)) { favorites=favorites.filter(x=>x!==i.id); btn.className='fav-btn'; ps.setAttribute('d',"M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z");}
-                else { favorites.unshift(i.id); btn.className='fav-btn active'; ps.setAttribute('d',"M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"); }
-                updateStorage(); renderAllTabs();
-            };
-
-            document.getElementById(cId).appendChild(cd);
-            fetchImage(i.p).then(u => { if(u){ const iel = document.getElementById(`ig-${cId}-${i.id}`); if(iel){ iel.src=u; iel.onload=()=>{iel.classList.add('loaded'); const sx = document.getElementById(`shim-${cId}-${i.id}`); if(sx) sx.classList.remove('shimmer');}; } } });
-        }
-
-        function uPag(tId, cur, tot) {
-            const tp = Math.ceil(tot/ITEMS_PER_PAGE)||1; const pc = document.getElementById(`${tId}Pagination`);
-            const pBtn = document.getElementById(`prev${tId.charAt(0).toUpperCase()+tId.slice(1)}`);
-            const nBtn = document.getElementById(`next${tId.charAt(0).toUpperCase()+tId.slice(1)}`);
-            if(tot <= ITEMS_PER_PAGE){ pc.style.display='none'; return;}
-            pc.style.display='flex'; document.getElementById(`pageCurrent${tId.charAt(0).toUpperCase()+tId.slice(1)}`).innerText=cur; document.getElementById(`pageTotal${tId.charAt(0).toUpperCase()+tId.slice(1)}`).innerText=tp;
-            pBtn.disabled=cur===1; nBtn.disabled=cur===tp;
-            const dc = document.getElementById(`${tId}Dots`); dc.innerHTML='';
-            const sd=Math.max(1,cur-2); const ed=Math.min(tp,sd+4);
-            for(let i=sd;i<=ed;i++) { const d=document.createElement('div'); d.className=i===cur?'dot active':'dot'; dc.appendChild(d); }
-        }
-
-        function changePage(tId, dir) { hapticLight(); pageState[tId]+=dir; renderAllTabs(); window.scrollTo({top:0, behavior:'smooth'}); }
-        function pagData(dt, pg) { const si = (pg-1)*ITEMS_PER_PAGE; return dt.slice(si, si+ITEMS_PER_PAGE); }
 
         function renderTabHome() {
-            const gr = document.getElementById('homeGrid'); const emp = document.getElementById('homeEmpty'); gr.innerHTML=''; emp.style.display='none';
-            let flt = catalogData.filter(i => { return i.t.toLowerCase().includes(searchQuery) && (currentFilter==='all' || (currentFilter==='prem' && i.is_prem===1) || (currentFilter==='free' && i.is_prem===0)); });
-            if (flt.length===0){ emp.style.display='block'; document.getElementById('homePagination').style.display='none'; return; }
-            pagData(flt, pageState.home).forEach(i=>createCard(i,'homeGrid')); uPag('home', pageState.home, flt.length);
+            document.getElementById('homeGrid').innerHTML=''; document.getElementById('homeEmpty').style.display='none';
+            let flT = getFilteredData(catalogData); if(flT.length===0){ document.getElementById('homeEmpty').style.display='block'; document.getElementById('homePagination').style.display='none'; return;}
+            paginate(flT, pageState.home).forEach(i=>createCard(i,'homeGrid')); uiPgBtn('home', pageState.home, flT.length);
         }
 
         function renderTabFav() {
-            const gr = document.getElementById('favGrid'); const emp = document.getElementById('favEmpty'); gr.innerHTML=''; emp.style.display='none';
-            let rI = catalogData.filter(i=>favorites.includes(i.id)).sort((a,b)=>favorites.indexOf(a.id)-favorites.indexOf(b.id));
-            let flt = rI.filter(i=>{return i.t.toLowerCase().includes(searchQuery) && (currentFilter==='all'||(currentFilter==='prem'&&i.is_prem===1)||(currentFilter==='free'&&i.is_prem===0));});
-            if(flt.length===0){emp.style.display='block'; document.getElementById('favPagination').style.display='none'; return;}
-            const mxp = Math.ceil(flt.length/ITEMS_PER_PAGE); if(pageState.fav>mxp&&mxp>0) pageState.fav=mxp;
-            pagData(flt, pageState.fav).forEach(i=>createCard(i,'favGrid')); uPag('fav', pageState.fav, flt.length);
+            document.getElementById('favGrid').innerHTML=''; document.getElementById('favEmpty').style.display='none';
+            let drA = catalogData.filter(i=>favorites.includes(i.id)).sort((a,b)=>favorites.indexOf(a.id)-favorites.indexOf(b.id)); let fD = getFilteredData(drA); if(fD.length===0) { document.getElementById('favEmpty').style.display='block'; document.getElementById('favPagination').style.display='none'; return;}
+            let mp = Math.ceil(fD.length/ITEMS_PER_PAGE); if(pageState.fav>mp && mp>0) pageState.fav=mp; paginate(fD, pageState.fav).forEach(i=>createCard(i,'favGrid')); uiPgBtn('fav', pageState.fav, fD.length);
         }
 
         function renderTabHist() {
-            const gr = document.getElementById('histGrid'); const emp = document.getElementById('histEmpty'); gr.innerHTML=''; emp.style.display='none';
-            let rI = catalogData.filter(i=>historyList.includes(i.id)).sort((a,b)=>historyList.indexOf(a.id)-historyList.indexOf(b.id));
-            let flt = rI.filter(i=>{return i.t.toLowerCase().includes(searchQuery) && (currentFilter==='all'||(currentFilter==='prem'&&i.is_prem===1)||(currentFilter==='free'&&i.is_prem===0));});
-            if(flt.length===0){emp.style.display='block'; document.getElementById('histPagination').style.display='none'; return;}
-            const mxp = Math.ceil(flt.length/ITEMS_PER_PAGE); if(pageState.hist>mxp&&mxp>0) pageState.hist=mxp;
-            pagData(flt, pageState.hist).forEach(i=>createCard(i,'histGrid')); uPag('hist', pageState.hist, flt.length);
+            document.getElementById('histGrid').innerHTML=''; document.getElementById('histEmpty').style.display='none';
+            let hdR = catalogData.filter(i=>historyList.includes(i.id)).sort((a,b)=>historyList.indexOf(a.id)-historyList.indexOf(b.id)); let qZ = getFilteredData(hdR); if(qZ.length===0){document.getElementById('histEmpty').style.display='block'; document.getElementById('histPagination').style.display='none'; return;}
+            let ppM = Math.ceil(qZ.length/ITEMS_PER_PAGE); if(pageState.hist>ppM && ppM>0) pageState.hist=ppM; paginate(qZ, pageState.hist).forEach(i=>createCard(i,'histGrid')); uiPgBtn('hist', pageState.hist, qZ.length);
         }
 
-        function renderAllTabs() { renderTabHome(); if(document.getElementById('view-fav').classList.contains('active')) renderTabFav(); if(document.getElementById('view-hist').classList.contains('active')) renderTabHist(); }
-
-        document.getElementById('searchInput').addEventListener('input', (e) => { searchQuery=e.target.value.toLowerCase(); pageState.home=1; pageState.fav=1; pageState.hist=1; renderAllTabs(); });
+        function renderAllTabs(){ renderTabHome(); if(document.getElementById('view-fav').classList.contains('active')) renderTabFav(); if(document.getElementById('view-hist').classList.contains('active')) renderTabHist(); }
         
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => { hapticLight(); document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); e.target.classList.add('active'); currentFilter = e.target.getAttribute('data-filter'); pageState.home=1; pageState.fav=1; pageState.hist=1; renderAllTabs(); });
-        });
-
-        document.querySelectorAll('.nav-item').forEach(nav => {
-            nav.addEventListener('click', (e) => {
-                hapticLight(); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); const t = e.currentTarget; t.classList.add('active');
-                const tId = t.getAttribute('data-tab');
-                document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
-                document.getElementById('view-' + tId).classList.add('active');
-                if(tId==='home') renderTabHome(); if(tId==='fav') renderTabFav(); if(tId==='hist') renderTabHist();
-                if(tId!=='vip') window.scrollTo(0,0);
-            });
-        });
-
+        function changePage(t, d){ hapticLight(); pageState[t]+=d; if(t==='home') renderTabHome(); if(t==='fav') renderTabFav(); if(t==='hist') renderTabHist(); window.scrollTo({top:0, behavior:'smooth'}); }
+        
+        document.getElementById('searchInput').addEventListener('input', () => { pageState.home = 1; pageState.fav = 1; pageState.hist = 1; renderAllTabs(); });
+        document.querySelectorAll('.filter-btn').forEach(btn => { btn.addEventListener('click', (e) => { hapticLight(); document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); e.target.classList.add('active'); currentFilter = e.target.getAttribute('data-filter'); pageState.home = 1; pageState.fav = 1; pageState.hist = 1; renderAllTabs();}); });
+        document.querySelectorAll('.nav-item').forEach(nav => { nav.addEventListener('click', (e) => { hapticLight(); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); const tsG = e.currentTarget; tsG.classList.add('active'); const tlH = tsG.getAttribute('data-tab'); document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active')); document.getElementById('view-' + tlH).classList.add('active'); if(tlH==='home'){document.getElementById('upgradeContainer').style.display = sysVars.uid_saweria.trim() !== "" ? "block" : "none";} else{ document.getElementById('upgradeContainer').style.display = 'none';} if(tlH === 'home') renderTabHome(); if(tlH === 'fav') renderTabFav(); if(tlH === 'hist') renderTabHist(); window.scrollTo(0,0);});});
         initApp();
     </script>
 </body>

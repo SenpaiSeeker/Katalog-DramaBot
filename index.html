@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Katalog Drama Bot</title>
+    <title>katalog drama bot</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
@@ -44,6 +44,7 @@
         body { margin: 0; padding: 0; background-color: var(--bg); color: var(--text); overflow-x: hidden; padding-bottom: 70px; transition: background-color 0.3s, color 0.3s; }
         
         .header { padding: 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: var(--bg); opacity: 0.98; z-index: 100; transition: background-color 0.3s; box-shadow: 0 4px 10px var(--shadow); }
+        
         .header-left { display: flex; align-items: center; gap: 8px; overflow: hidden; }
         .play-logo { width: 32px; height: 32px; background-color: var(--card); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 10px rgba(92,32,218,0.4); flex-shrink: 0;}
         .play-logo svg { width: 14px; height: 14px; fill: var(--accent); margin-left: 2px; }
@@ -109,7 +110,7 @@
         .empty-state { text-align: center; padding: 80px 20px; color: var(--text-muted); font-size: 14px; font-weight: 500; display: none; line-height: 1.6;}
         
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 65px; background: var(--bg); display: flex; justify-content: space-around; align-items: center; z-index: 1000; box-shadow: 0 -4px 10px var(--shadow); transition: background-color 0.3s; padding-bottom:env(safe-area-inset-bottom); }
-        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 25%; height: 100%; color: var(--text-muted); font-size: 9px; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: 0.3s; letter-spacing: 0.5px; position: relative;}
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 33%; height: 100%; color: var(--text-muted); font-size: 9px; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: 0.3s; letter-spacing: 0.5px; position: relative;}
         .nav-item svg { width: 24px; height: 24px; margin-bottom: 4px; fill: none; stroke: currentColor; stroke-width: 2; transition: 0.3s;}
         .nav-item.active { color: var(--accent); }
         .nav-item.active svg { stroke: var(--accent); fill: rgba(0, 242, 254, 0.15);}
@@ -117,24 +118,6 @@
         
         .tab-title { padding: 15px 15px 5px; font-size: 18px; font-weight: 800; display: flex; align-items: center; gap: 8px; color: var(--text); }
         .tab-title svg { width: 22px; height: 22px; fill: var(--primary); }
-
-        .vip-container { padding: 20px; }
-        .vip-card { background: var(--card); border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 20px; box-shadow: 0 4px 12px var(--shadow); cursor: pointer; border: 2px solid transparent; transition: 0.3s; position: relative; overflow: hidden;}
-        .vip-card:active { transform: scale(0.96); }
-        .vip-card.active { border-color: var(--primary); background: rgba(92, 32, 218, 0.05); }
-        .vip-title { font-size: 18px; font-weight: 800; margin-bottom: 10px; color: var(--text); }
-        .vip-price { font-size: 24px; font-weight: 900; color: var(--accent); margin-bottom: 5px; }
-        .vip-disc { font-size: 11px; color: #fff; background: var(--primary); padding: 3px 8px; border-radius: 20px; position: absolute; top: -5px; right: -5px; font-weight: bold;}
-        .buy-btn { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; box-shadow: 0 5px 15px rgba(92, 32, 218, 0.4); margin-top:10px; }
-        .buy-btn:active { transform: scale(0.96); }
-
-        .qris-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: 0.3s; padding: 20px;}
-        .qris-overlay.active { opacity: 1; pointer-events: auto; }
-        .qris-card { background: var(--card); border-radius: 20px; padding: 30px; width: 100%; max-width: 350px; display: flex; flex-direction: column; align-items: center; box-shadow: 0 10px 40px rgba(0,0,0,0.6); position: relative;}
-        .qris-img { width: 220px; height: 220px; border-radius: 12px; margin: 20px 0; background: white; padding:10px;}
-        .timer-box { font-size: 28px; font-weight: 900; color: var(--primary); letter-spacing: 2px; }
-        .confirm-btn { width: 100%; padding: 15px; border-radius: 12px; background: #28a745; border: none; color: white; font-weight: 800; font-size: 14px; cursor: pointer; margin-top: 15px; }
-        .close-qris { position: absolute; top: 15px; right: 15px; width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,0.1); border: none; color: var(--text); font-size: 16px; display: flex; justify-content: center; align-items: center; cursor: pointer;}
     </style>
 </head>
 <body class="dark-theme">
@@ -144,7 +127,7 @@
             <div class="play-logo">
                 <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
             </div>
-            <div class="app-title" id="botTitle">Katalog Drama Bot</div>
+            <div class="app-title" id="botTitle">katalog drama bot</div>
         </div>
         <div class="header-right">
             <div class="theme-btn" onclick="toggleTheme()" id="themeBtn">
@@ -165,21 +148,30 @@
             <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
             <input type="text" id="searchInput" placeholder="Cari film atau serial...">
         </div>
+        
         <div class="filter-container">
             <button class="filter-btn active" data-filter="all">Semua</button>
             <button class="filter-btn" data-filter="prem">💎 Premium</button>
             <button class="filter-btn" data-filter="free">🆓 Gratis</button>
         </div>
+
         <div class="grid-container" id="homeGrid"></div>
+        
         <div class="pagination-container" id="homePagination" style="display:none;">
             <div class="pagination-info"><span id="pageCurrentHome">1</span> <span style="color:var(--text-muted);font-weight:400;font-size:14px;">/</span> <span id="pageTotalHome" style="color:var(--text-muted);font-weight:400;font-size:14px;">1</span></div>
             <div class="pagination-dots" id="homeDots"></div>
             <div class="pagination-actions">
-                <button class="page-btn" id="prevHome" onclick="changePage('home', -1)"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/></svg> Prev</button>
-                <button class="page-btn" id="nextHome" onclick="changePage('home', 1)">Next <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg></button>
+                <button class="page-btn" id="prevHome" onclick="changePage('home', -1)">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/></svg>
+                    Prev
+                </button>
+                <button class="page-btn" id="nextHome" onclick="changePage('home', 1)">
+                    Next
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
+                </button>
             </div>
         </div>
-        <div id="homeEmpty" class="empty-state">Opps!<br><br>Data tidak ditemukan.</div>
+        <div id="homeEmpty" class="empty-state">Opps!<br><br>Data tidak ditemukan di database.</div>
     </div>
 
     <div id="view-fav" class="view-section">
@@ -213,27 +205,7 @@
                 <button class="page-btn" id="nextHist" onclick="changePage('hist', 1)">Next <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg></button>
             </div>
         </div>
-        <div id="histEmpty" class="empty-state">Anda belum membuka drama apapun.<br><br>Riwayat menonton Anda otomatis tercatat di sini.</div>
-    </div>
-
-    <div id="view-vip" class="view-section">
-        <div class="tab-title">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
-            VIP Member
-        </div>
-        <div class="vip-container" id="vipList"></div>
-    </div>
-
-    <div class="qris-overlay" id="qrisOverlay">
-        <div class="qris-card">
-            <button class="close-qris" onclick="closePayment()">×</button>
-            <div style="font-weight:900; font-size:18px;">Pembayaran QRIS</div>
-            <div style="font-size:12px; color:var(--text-muted); text-align:center; margin-top:5px;" id="qrisTotal">Nominal: -</div>
-            <img id="imgQR" class="qris-img" src="" alt="QRIS Loading">
-            <div class="timer-box" id="payTimer">05:00</div>
-            <div style="font-size:12px; text-align:center; margin-top:10px;">Selesaikan pembayaran sebelum waktu habis.</div>
-            <button class="confirm-btn" onclick="verifyPayment()">VERIFIKASI KE BOT</button>
-        </div>
+        <div id="histEmpty" class="empty-state">Anda belum membuka drama apapun.<br><br>Riwayat menonton Anda akan otomatis tercatat di sini.</div>
     </div>
 
     <div class="bottom-nav">
@@ -249,10 +221,6 @@
             <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
             <span>Riwayat</span>
         </div>
-        <div class="nav-item" data-tab="vip">
-            <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
-            <span>Langganan</span>
-        </div>
     </div>
 
     <script>
@@ -262,21 +230,16 @@
 
         let botToken = "";
         let dynamicBotUsername = "Bot";
-        let catalogData =[];
-        let sysData = {};
+        let catalogData = [];
         let currentFilter = 'all';
         let searchQuery = '';
 
-        let payInterval;
-        let actTrx = '';
-        let actMon = 1;
-
-        const ITEMS_PER_PAGE = 10;
+        const ITEMS_PER_PAGE = 8;
         const pageState = { home: 1, fav: 1, hist: 1 };
         
-        let favorites = JSON.parse(localStorage.getItem('fav_v4')) ||[];
-        let historyList = JSON.parse(localStorage.getItem('hist_v4')) ||[];
-        let isDarkMode = localStorage.getItem('theme_v4') === null ? true : localStorage.getItem('theme_v4') === 'dark';
+        let favorites = JSON.parse(localStorage.getItem('fav_v3')) ||[];
+        let historyList = JSON.parse(localStorage.getItem('hist_v3')) ||[];
+        let isDarkMode = localStorage.getItem('theme_v3') === null ? true : localStorage.getItem('theme_v3') === 'dark';
 
         function updateThemeIcon() {
             const svgIcon = document.querySelector('#themeBtn svg');
@@ -288,11 +251,20 @@
         }
 
         function applyTheme() {
-            if(isDarkMode) document.body.classList.add('dark-theme');
-            else document.body.classList.remove('dark-theme');
+            if(isDarkMode) {
+                document.body.classList.add('dark-theme');
+                document.body.classList.remove('light-theme');
+            } else {
+                document.body.classList.add('light-theme');
+                document.body.classList.remove('dark-theme');
+            }
             
-            if(tg.setHeaderColor) tg.setHeaderColor(isDarkMode ? '#09041a' : '#f4f4f6');
-            if(tg.setBackgroundColor) tg.setBackgroundColor(isDarkMode ? '#09041a' : '#f4f4f6');
+            if(tg.setHeaderColor) {
+                tg.setHeaderColor(isDarkMode ? '#09041a' : '#f4f4f6');
+            }
+            if(tg.setBackgroundColor) {
+                tg.setBackgroundColor(isDarkMode ? '#09041a' : '#f4f4f6');
+            }
             updateThemeIcon();
         }
         applyTheme();
@@ -300,7 +272,7 @@
         function toggleTheme() {
             hapticLight();
             isDarkMode = !isDarkMode;
-            localStorage.setItem('theme_v4', isDarkMode ? 'dark' : 'light');
+            localStorage.setItem('theme_v3', isDarkMode ? 'dark' : 'light');
             applyTheme();
         }
 
@@ -308,21 +280,17 @@
         const hapticHeavy = () => { if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('heavy'); };
 
         function updateStorage() {
-            localStorage.setItem('fav_v4', JSON.stringify(favorites));
-            localStorage.setItem('hist_v4', JSON.stringify(historyList));
+            localStorage.setItem('fav_v3', JSON.stringify(favorites));
+            localStorage.setItem('hist_v3', JSON.stringify(historyList));
         }
 
         async function initApp() {
             const user = tg.initDataUnsafe?.user;
-            let displayName = "Tamu";
-            let fallbackName = "Guest";
             if (user) {
                 const fullName = user.first_name + (user.last_name ? " " + user.last_name : "");
                 document.getElementById('userName').innerText = fullName;
                 document.getElementById('userId').innerText = "ID: " + user.id;
                 document.getElementById('userAvatar').src = user.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.first_name)}&background=${isDarkMode?'181134':'ffffff'}&color=${isDarkMode?'fff':'1a1a1a'}`;
-                displayName = fullName;
-                fallbackName = user.first_name;
             }
 
             const urlParams = new URLSearchParams(window.location.search);
@@ -338,18 +306,14 @@
                     if(tgPath) {
                         if (tgPath.startsWith("B64_")) {
                             const b64 = tgPath.replace("B64_", "").replace(/-/g, '+').replace(/_/g, '/');
-                            const extracted = JSON.parse(decodeURIComponent(escape(atob(b64))));
-                            catalogData = extracted.c ||[];
-                            sysData = extracted.s || {};
+                            catalogData = JSON.parse(decodeURIComponent(escape(atob(b64))));
                         } else {
                             const graphRes = await fetch(`https://api.telegra.ph/getPage/${tgPath}?return_content=true`);
                             const graphJson = await graphRes.json();
                             if (graphJson.ok) {
                                 let finalStr = "";
                                 graphJson.result.content.forEach(node => { if(node.children) finalStr += node.children[0]; });
-                                const extracted = JSON.parse(finalStr);
-                                catalogData = extracted.c ||[];
-                                sysData = extracted.s || {};
+                                catalogData = JSON.parse(finalStr);
                             }
                         }
                     }
@@ -359,20 +323,17 @@
                         .then(json => {
                             if (json.ok) {
                                 dynamicBotUsername = json.result.username;
-                                document.getElementById('botTitle').innerText = "Katalog Drama Bot";
+                                document.getElementById('botTitle').innerText = json.result.first_name;
                             }
                         }).catch(()=>{});
 
                     renderAllTabs();
-                    setupVIPMenu(fallbackName);
                 } catch (e) {
-                    showError("Decryption error.");
+                    showError("Kesalahan Dekripsi Payload.");
                 }
             } else {
-                 showError("Payload missing.");
+                 showError("Parameter Keamanan Tidak Lengkap.");
             }
-
-            checkResumePayment();
         }
 
         function showError(msg) {
@@ -404,7 +365,7 @@
             const isFav = favorites.includes(item.id);
             const badgeClass = item.is_prem ? 'tag-prem' : 'tag-free';
             const badgeText = item.is_prem ? `<svg viewBox="0 0 24 24" width="10" height="10" fill="currentColor"><path d="M12 2L2 9l3 13h14l3-13-10-7zm0 2.5l6.5 4.5-3.5 1-3-3.5-3 3.5-3.5-1 6.5-4.5z"/></svg> PREMIUM` : 'GRATIS';
-            const favIconPath = isFav ? "M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z" : "M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z";
+            const favIconPath = isFav ? "M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" : "M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z";
             const favClass = isFav ? 'fav-btn active' : 'fav-btn';
 
             card.innerHTML = `
@@ -597,115 +558,7 @@
             if(document.getElementById('view-hist').classList.contains('active')) renderTabHist();
         }
 
-        function setupVIPMenu(clientName) {
-            const basePrc = sysData.prc || 30000;
-            const container = document.getElementById('vipList');
-            const options =[
-                {m: 1, disc: 0, text: 'Akses 1 Bulan Penuh'},
-                {m: 3, disc: 15, text: 'Lebih hemat 15%'},
-                {m: 6, disc: 25, text: 'Nikmati film tanpa batas setengah tahun'},
-                {m: 12, disc: 35, text: 'SUPER DEAL! Hemat biaya paling besar'}
-            ];
-
-            options.forEach(opt => {
-                let cost = basePrc * opt.m;
-                if(opt.disc > 0) cost -= Math.floor(cost * (opt.disc / 100));
-                
-                const htmlStr = `
-                    <div class="vip-card" onclick="startPayProcess(${opt.m}, ${cost}, '${clientName}')">
-                        ${opt.disc > 0 ? `<div class="vip-disc">-${opt.disc}%</div>` : ''}
-                        <div class="vip-title">${opt.m} Bulan Premium</div>
-                        <div class="vip-price">Rp ${cost.toLocaleString('id-ID')}</div>
-                        <div style="font-size:11px; color:var(--text-muted); margin-bottom:5px;">${opt.text}</div>
-                        <button class="buy-btn">BELI SEKARANG</button>
-                    </div>
-                `;
-                container.innerHTML += htmlStr;
-            });
-        }
-
-        async function startPayProcess(months, finalAmount, clientName) {
-            hapticHeavy();
-            const sid = sysData.usr;
-            if(!sid) return tg.showAlert("ID Saweria Penjual Belum Diatur");
-
-            const btn = document.activeElement;
-            const ogBtn = btn.innerHTML;
-            btn.innerHTML = "Memproses...";
-            btn.disabled = true;
-
-            try {
-                let rn = Math.floor(Math.random()*900)+100;
-                let payload = {
-                    agree: true, notUnderage: true, message: `AutoBuy_TG${rn}`,
-                    amount: finalAmount, payment_type: "qris", vote: "", currency: "IDR",
-                    customer_info: { first_name: clientName, email: `client${rn}@tgbot.net`, phone: "" }
-                };
-
-                let res = await fetch(`https://backend.saweria.co/donations/${sid}`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                
-                let j = await res.json();
-                if(j.data && j.data.id) {
-                    let cacheTx = { id: j.data.id, qr: j.data.qr_string, total: finalAmount, m: months, end: Date.now() + 300000 };
-                    localStorage.setItem('syspay_'+dynamicBotUsername, JSON.stringify(cacheTx));
-                    renderQris(cacheTx);
-                } else {
-                    tg.showAlert("Respons gagal. Hubungi admin.");
-                }
-            } catch (e) {
-                tg.showAlert("Sistem gagal terkoneksi pembayaran.");
-            }
-            btn.innerHTML = ogBtn;
-            btn.disabled = false;
-        }
-
-        function renderQris(dataTx) {
-            clearInterval(payInterval);
-            actTrx = dataTx.id;
-            actMon = dataTx.m;
-            document.getElementById('qrisTotal').innerText = `Selesaikan pembayaran sebesar: Rp ${dataTx.total.toLocaleString('id-ID')}`;
-            document.getElementById('imgQR').src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${dataTx.qr}`;
-            document.getElementById('qrisOverlay').classList.add('active');
-
-            payInterval = setInterval(() => {
-                const rem = dataTx.end - Date.now();
-                if(rem <= 0) {
-                    clearInterval(payInterval);
-                    document.getElementById('payTimer').innerText = "KADALUARSA";
-                    localStorage.removeItem('syspay_'+dynamicBotUsername);
-                } else {
-                    const min = Math.floor(rem/60000);
-                    const sec = Math.floor((rem%60000)/1000);
-                    document.getElementById('payTimer').innerText = `${min.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
-                }
-            }, 1000);
-        }
-
-        function closePayment() {
-            hapticLight();
-            document.getElementById('qrisOverlay').classList.remove('active');
-        }
-
-        function verifyPayment() {
-            hapticHeavy();
-            tg.openTelegramLink(`https://t.me/${dynamicBotUsername}?start=verify_payment_${actTrx}_${actMon}`);
-            tg.close();
-        }
-
-        function checkResumePayment() {
-            const p = localStorage.getItem('syspay_'+dynamicBotUsername);
-            if(p) {
-                const parsed = JSON.parse(p);
-                if(parsed.end > Date.now()) renderQris(parsed);
-                else localStorage.removeItem('syspay_'+dynamicBotUsername);
-            }
-        }
-
-        document.getElementById('searchInput').addEventListener('input', (e) => { 
-            searchQuery = e.target.value.toLowerCase();
+        document.getElementById('searchInput').addEventListener('input', () => { 
             pageState.home = 1; pageState.fav = 1; pageState.hist = 1;
             renderAllTabs(); 
         });

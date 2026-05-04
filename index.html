@@ -55,7 +55,14 @@
             <input type="text" id="iptSearch" placeholder="Eksplorasi VOD Terbaik..." />
             <div class="search-glow"></div>
         </div>
-        <div class="category-scroll" id="catBox"></div>
+        
+        <div class="category-dropdown-wrapper">
+            <svg viewBox="0 0 24 24" class="dropdown-icon"><path d="M7 10l5 5 5-5H7z"/></svg>
+            <select class="category-select" id="catBox">
+            </select>
+            <div class="select-glow-bg"></div>
+        </div>
+
         <div id="v-home" class="view active">
             <div class="carousel" id="cr"></div>
             <div class="section-label">

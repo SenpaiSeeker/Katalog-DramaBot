@@ -329,54 +329,65 @@ async function parseLaunchParams() {
     renderUserInterface();
 }
 
-function toggleCatDropdown() {
+function openCatModal() {
     triggerLightHaptic();
-    const btn = document.getElementById("catDropBtn");
-    const panel = document.getElementById("catPanel");
-    const isOpen = btn.classList.contains("open");
-    btn.classList.toggle("open", !isOpen);
-    panel.classList.toggle("open", !isOpen);
+    document.getElementById("catModalBg").classList.add("open");
+    document.getElementById("catModal").classList.add("open");
 }
 
-function closeCatDropdown() {
-    const btn = document.getElementById("catDropBtn");
-    const panel = document.getElementById("catPanel");
-    if (btn) btn.classList.remove("open");
-    if (panel) panel.classList.remove("open");
+function closeCatModal() {
+    document.getElementById("catModalBg").classList.remove("open");
+    document.getElementById("catModal").classList.remove("open");
 }
-
-document.addEventListener("click", (e) => {
-    const wrap = document.querySelector(".cat-dropdown-wrap");
-    if (wrap && !wrap.contains(e.target)) closeCatDropdown();
-});
 
 function buildCategoryFilter() {
     const categoriesExtract = ["ALL", ...new Set(mediaCatalog.map((item) => item.c))].filter(Boolean);
     const categoryBoxContainer = document.getElementById("catBox");
     categoryBoxContainer.innerHTML = "";
 
-    const countEl = document.getElementById("catBtnCount");
+    const countEl = document.getElementById("filterListCount");
     if (countEl) countEl.textContent = categoriesExtract.length;
 
     categoriesExtract.forEach((catName, idx) => {
         if (idx > 0) {
             const divEl = document.createElement("div");
-            divEl.className = "cat-panel-divider";
+            divEl.className = "cat-chip-divider";
             categoryBoxContainer.appendChild(divEl);
         }
 
         const chipElement = document.createElement("div");
         chipElement.className = "cat-chip" + (catName === "ALL" ? " active" : "");
-        chipElement.innerText = catName;
+
+        const radioEl = document.createElement("div");
+        radioEl.className = "cat-chip-radio";
+
+        const textEl = document.createElement("span");
+        textEl.className = "cat-chip-text";
+        textEl.textContent = catName === "ALL" ? "Semua Kategori" : catName;
+
+        const arrowEl = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        arrowEl.setAttribute("viewBox", "0 0 24 24");
+        arrowEl.setAttribute("fill", "none");
+        arrowEl.setAttribute("stroke-width", "2.5");
+        arrowEl.setAttribute("stroke-linecap", "round");
+        arrowEl.setAttribute("stroke-linejoin", "round");
+        arrowEl.classList.add("cat-chip-arrow");
+        const polyline = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+        polyline.setAttribute("points", "9 18 15 12 9 6");
+        arrowEl.appendChild(polyline);
+
+        chipElement.appendChild(radioEl);
+        chipElement.appendChild(textEl);
+        chipElement.appendChild(arrowEl);
 
         makeTappable(chipElement, () => {
             triggerLightHaptic();
             document.querySelectorAll(".cat-chip").forEach((c) => c.classList.remove("active"));
             chipElement.classList.add("active");
             activeCategory = catName;
-            const labelEl = document.getElementById("catBtnLabel");
-            if (labelEl) labelEl.textContent = catName === "ALL" ? "ALL KATEGORI" : catName;
-            closeCatDropdown();
+            const tagLabel = document.getElementById("filterTagLabel");
+            if (tagLabel) tagLabel.textContent = catName === "ALL" ? "SEMUA" : catName;
+            closeCatModal();
             renderUserInterface();
         });
 

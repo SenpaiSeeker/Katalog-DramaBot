@@ -329,11 +329,42 @@ async function parseLaunchParams() {
     renderUserInterface();
 }
 
+function toggleCatDropdown() {
+    triggerLightHaptic();
+    const btn = document.getElementById("catDropBtn");
+    const panel = document.getElementById("catPanel");
+    const isOpen = btn.classList.contains("open");
+    btn.classList.toggle("open", !isOpen);
+    panel.classList.toggle("open", !isOpen);
+}
+
+function closeCatDropdown() {
+    const btn = document.getElementById("catDropBtn");
+    const panel = document.getElementById("catPanel");
+    if (btn) btn.classList.remove("open");
+    if (panel) panel.classList.remove("open");
+}
+
+document.addEventListener("click", (e) => {
+    const wrap = document.querySelector(".cat-dropdown-wrap");
+    if (wrap && !wrap.contains(e.target)) closeCatDropdown();
+});
+
 function buildCategoryFilter() {
     const categoriesExtract = ["ALL", ...new Set(mediaCatalog.map((item) => item.c))].filter(Boolean);
     const categoryBoxContainer = document.getElementById("catBox");
     categoryBoxContainer.innerHTML = "";
-    categoriesExtract.forEach((catName) => {
+
+    const countEl = document.getElementById("catBtnCount");
+    if (countEl) countEl.textContent = categoriesExtract.length;
+
+    categoriesExtract.forEach((catName, idx) => {
+        if (idx > 0) {
+            const divEl = document.createElement("div");
+            divEl.className = "cat-panel-divider";
+            categoryBoxContainer.appendChild(divEl);
+        }
+
         const chipElement = document.createElement("div");
         chipElement.className = "cat-chip" + (catName === "ALL" ? " active" : "");
         chipElement.innerText = catName;
@@ -343,6 +374,9 @@ function buildCategoryFilter() {
             document.querySelectorAll(".cat-chip").forEach((c) => c.classList.remove("active"));
             chipElement.classList.add("active");
             activeCategory = catName;
+            const labelEl = document.getElementById("catBtnLabel");
+            if (labelEl) labelEl.textContent = catName === "ALL" ? "ALL KATEGORI" : catName;
+            closeCatDropdown();
             renderUserInterface();
         });
 

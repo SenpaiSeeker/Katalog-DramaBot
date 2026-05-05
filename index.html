@@ -173,57 +173,42 @@
 
         <div class="bottom-sheet-bg" id="mbg" onclick="closeMediaDetails()"></div>
         <div class="bottom-sheet" id="msh">
-            <div class="sheet-bg-glow">
-                <div class="sheet-blob sheet-blob-1"></div>
-                <div class="sheet-blob sheet-blob-2"></div>
-                <div class="sheet-blob sheet-blob-3"></div>
-            </div>
             <div class="bs-toprow">
                 <button class="bs-back-btn" onclick="closeMediaDetails()">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="15 18 9 12 15 6"/>
                     </svg>
-                    <span>Kembali</span>
+                    Kembali
                 </button>
                 <div class="bs-drag-handle"></div>
                 <div class="bs-toprow-filler"></div>
             </div>
             <div class="bs-poster-wrap">
-                <div class="bs-poster-glow"></div>
                 <img id="mimg" src="" class="bs-poster" />
+                <div class="bs-poster-glow"></div>
             </div>
             <div class="bs-title" id="mti"></div>
             <div class="bs-meta" id="mmet"></div>
-            <div class="bs-synopsis" id="msyn">
-                <div class="bs-synopsis-block">
-                    <span class="bs-synopsis-label">Sinopsis</span>
-                    <span class="bs-synopsis-quote-mark">"</span>
-                    <div class="bs-synopsis-text" id="msynText"></div>
-                </div>
-            </div>
+            <div class="bs-synopsis" id="msyn"></div>
             <div class="bs-divider"></div>
             <div class="bs-controls">
                 <div class="bs-icon" id="btShare">
                     <div class="bs-icon-btn share-btn">
-                        <div class="bs-icon-btn-inner">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="18" cy="5" r="3"/>
-                                <circle cx="6" cy="12" r="3"/>
-                                <circle cx="18" cy="19" r="3"/>
-                                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
-                                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
-                            </svg>
-                        </div>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="18" cy="5" r="3"/>
+                            <circle cx="6" cy="12" r="3"/>
+                            <circle cx="18" cy="19" r="3"/>
+                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+                        </svg>
                     </div>
                     <span>Bagikan</span>
                 </div>
                 <div class="bs-icon" id="btFav">
                     <div class="bs-icon-btn fav-btn">
-                        <div class="bs-icon-btn-inner">
-                            <svg id="btFIc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-                            </svg>
-                        </div>
+                        <svg id="btFIc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                        </svg>
                     </div>
                     <span>Simpan</span>
                 </div>

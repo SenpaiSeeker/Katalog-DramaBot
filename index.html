@@ -61,7 +61,43 @@
             <div class="search-glow"></div>
         </div>
 
-        <div class="category-scroll" id="catBox"></div>
+        <div class="filter-bar">
+            <div class="filter-active-tag" id="filterActiveTag">
+                <span class="filter-tag-dot"></span>
+                <span id="filterTagLabel">SEMUA</span>
+            </div>
+            <button class="filter-list-btn" id="filterListBtn" onclick="openCatModal()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="8" y1="6" x2="21" y2="6"/>
+                    <line x1="8" y1="12" x2="21" y2="12"/>
+                    <line x1="8" y1="18" x2="21" y2="18"/>
+                    <line x1="3" y1="6" x2="3.01" y2="6"/>
+                    <line x1="3" y1="12" x2="3.01" y2="12"/>
+                    <line x1="3" y1="18" x2="3.01" y2="18"/>
+                </svg>
+                <span>Kategori</span>
+                <span class="filter-list-count" id="filterListCount">0</span>
+            </button>
+        </div>
+
+        <div class="cat-modal-bg" id="catModalBg" onclick="closeCatModal()"></div>
+        <div class="cat-modal" id="catModal">
+            <div class="cat-modal-header">
+                <div class="cat-modal-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="cat-modal-icon">
+                        <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/>
+                        <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
+                    </svg>
+                    PILIH KATEGORI
+                </div>
+                <button class="cat-modal-close" onclick="closeCatModal()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="cat-modal-body" id="catBox"></div>
+        </div>
 
         <div id="v-home" class="view active">
             <div class="carousel" id="cr"></div>

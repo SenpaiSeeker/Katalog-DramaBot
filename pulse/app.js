@@ -534,12 +534,12 @@ function openMediaDetails(databaseKey) {
         : '<span class="free">⭐ FREE</span>';
 
     document.getElementById("mmet").innerHTML =
-        `<span class="meta-item meta-item-cat">📂 ${catLabel}</span><span class="dot">•</span><span class="meta-item meta-item-ep">🎞 ${epLabel} Ep/Part</span><span class="dot">•</span>${pricingToken}`;
+        `<span class="meta-item">📂 ${catLabel}</span><span class="dot">•</span><span class="meta-item">🎞 ${epLabel} Ep/Part</span><span class="dot">•</span>${pricingToken}`;
 
-    const synopsisText = targetMovieResource.s && targetMovieResource.s !== "undefined"
-        ? targetMovieResource.s
-        : "Tap Tonton untuk melanjutkan. Konten diamankan secara Fsub khusus bot ini.";
-    document.getElementById("msynText").innerText = synopsisText;
+    document.getElementById("msyn").innerText =
+        targetMovieResource.s && targetMovieResource.s !== "undefined"
+            ? targetMovieResource.s
+            : "Tap Tonton untuk melanjutkan. Konten diamankan secara Fsub khusus bot ini.";
 
     const checkBookmarkActive = favoriteList.includes(databaseKey);
     const favBtnEl = document.querySelector("#btFav .bs-icon-btn");
@@ -549,12 +549,19 @@ function openMediaDetails(databaseKey) {
         favBtnEl.classList.add("active-fav");
         favSvg.style.fill = "#f59e0b";
         favSvg.style.stroke = "#f59e0b";
-        favSvg.style.filter = "drop-shadow(0 0 8px rgba(245,158,11,0.8))";
+        favSvg.style.filter = "drop-shadow(0 0 6px rgba(245,158,11,0.7))";
     } else {
         favBtnEl.classList.remove("active-fav");
         favSvg.style.fill = "none";
         favSvg.style.stroke = "currentColor";
         favSvg.style.filter = "none";
+    }
+
+    const bsPostGlow = document.querySelector(".bs-poster-glow");
+    if (bsPostGlow) {
+        bsPostGlow.style.background = checkBookmarkActive
+            ? "radial-gradient(ellipse, rgba(245,158,11,0.45), transparent 70%)"
+            : "radial-gradient(ellipse, rgba(124,58,237,0.45), transparent 70%)";
     }
 
     document.getElementById("btFav").onclick = () => {

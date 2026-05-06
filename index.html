@@ -7,7 +7,8 @@
         <script src="https://telegram.org/js/telegram-web-app.js"></script>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&family=Cinzel:wght@600;700&family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet" />
         <link rel="stylesheet" href="ignite/styles.css" />
     </head>
     <body class="dark-theme">
@@ -173,62 +174,48 @@
 
         <div class="bottom-sheet-bg" id="mbg" onclick="closeMediaDetails()"></div>
         <div class="bottom-sheet" id="msh">
-            <div class="bs-inner">
-                <div class="bs-hero">
-                    <div class="bs-hero-grid"></div>
-                    <div class="bs-hero-scan"></div>
-                    <div class="bs-hero-overlay"></div>
-                    <button class="bs-back-btn" onclick="closeMediaDetails()">
-                        <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M7.5 2L3.5 5.5L7.5 9" stroke="white" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        KEMBALI
-                    </button>
-                    <div class="bs-poster-zone">
-                        <div class="bs-poster-ring-outer">
-                            <div class="bs-poster-ring-inner">
-                                <img id="mimg" src="" class="bs-poster-img" />
-                            </div>
-                        </div>
+            <div class="bs-toprow">
+                <button class="bs-back-btn" onclick="closeMediaDetails()">
+                    <svg viewBox="0 0 11 11" fill="none">
+                        <path d="M7.5 2L3.5 5.5L7.5 9" stroke="white" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    KEMBALI
+                </button>
+                <div class="bs-drag-handle"></div>
+                <div class="bs-toprow-filler"></div>
+            </div>
+            <div class="bs-poster-wrap">
+                <div class="bs-poster-glow"></div>
+                <img id="mimg" src="" class="bs-poster" />
+            </div>
+            <div class="bs-title" id="mti"></div>
+            <div class="bs-meta" id="mmet"></div>
+            <div class="synopsis-wrap">
+                <div class="quote-bar"></div>
+                <div class="bs-synopsis" id="msyn"></div>
+            </div>
+            <div class="bs-divider"></div>
+            <div class="bs-controls">
+                <div class="bs-icon" id="btShare">
+                    <div class="bs-icon-btn share-btn">
+                        <svg viewBox="0 0 22 22">
+                            <circle cx="17" cy="4.5" r="2.5" />
+                            <circle cx="5" cy="11" r="2.5" />
+                            <circle cx="17" cy="17.5" r="2.5" />
+                            <path d="M7.2 9.8L14.8 5.7" stroke-linecap="round" />
+                            <path d="M7.2 12.2L14.8 16.3" stroke-linecap="round" />
+                        </svg>
                     </div>
+                    <span>BAGIKAN</span>
                 </div>
-
-                <div class="bs-body">
-                    <div style="height:11px"></div>
-                    <div class="bs-title" id="mti"></div>
-                    <div class="bs-badges" id="mmet"></div>
-                    
-                    <div class="bs-divider"></div>
-                    
-                    <div class="bs-synopsis-wrap">
-                        <div class="bs-quote-bar"></div>
-                        <div class="bs-synopsis" id="msyn"></div>
+                <div class="bs-icon" id="btFav">
+                    <div class="bs-icon-btn fav-btn">
+                        <svg id="btFIc" viewBox="0 0 22 22">
+                            <path d="M11 4C11 4 4.5 8 4.5 13.5C4.5 16.5 7.4 19 11 19C14.6 19 17.5 16.5 17.5 13.5C17.5 8 11 4 11 4Z" stroke-linejoin="round" />
+                            <path d="M11 9.5V14.5M8.5 12H13.5" stroke-linecap="round" />
+                        </svg>
                     </div>
-                    
-                    <div class="bs-divider"></div>
-
-                    <div class="bs-actions">
-                        <div class="bs-action-row">
-                            <button class="bs-act-btn bs-act-share" id="btShare">
-                                <div class="bs-act-icon">
-                                    <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="17" cy="4.5" r="2.5" stroke="#00d4ff" stroke-width="1.5"/><circle cx="5" cy="11" r="2.5" stroke="#00d4ff" stroke-width="1.5"/><circle cx="17" cy="17.5" r="2.5" stroke="#00d4ff" stroke-width="1.5"/><path d="M7.2 9.8L14.8 5.7" stroke="#00d4ff" stroke-width="1.2" stroke-linecap="round"/><path d="M7.2 12.2L14.8 16.3" stroke="#00d4ff" stroke-width="1.2" stroke-linecap="round"/></svg>
-                                </div>
-                                <span class="bs-act-label">BAGIKAN</span>
-                            </button>
-                            <button class="bs-act-btn bs-act-save" id="btFav">
-                                <div class="bs-act-icon">
-                                    <svg id="btFIc" width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 4C11 4 4.5 8 4.5 13.5C4.5 16.5 7.4 19 11 19C14.6 19 17.5 16.5 17.5 13.5C17.5 8 11 4 11 4Z" stroke="#ff0080" stroke-width="1.5" stroke-linejoin="round"/><path d="M11 9.5V14.5M8.5 12H13.5" stroke="#ff0080" stroke-width="1.5" stroke-linecap="round"/></svg>
-                                </div>
-                                <span class="bs-act-label">SIMPAN</span>
-                            </button>
-                        </div>
-                        
-                        <div class="bs-play-wrap">
-                            <div class="bs-play-glow"></div>
-                            <button class="bs-play-btn" id="btPlay">
-                                <div class="bs-play-icon"></div>
-                                PUTAR MOVIE GRATIS
-                            </button>
-                        </div>
-                    </div>
+                    <span>SIMPAN</span>
                 </div>
             </div>
         </div>
